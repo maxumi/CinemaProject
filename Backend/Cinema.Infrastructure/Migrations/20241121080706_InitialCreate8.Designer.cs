@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cinema.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241120120939_UpdatedDiscount")]
-    partial class UpdatedDiscount
+    [Migration("20241121080706_InitialCreate8")]
+    partial class InitialCreate8
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,7 +54,6 @@ namespace Cinema.Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Code")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
@@ -62,7 +61,7 @@ namespace Cinema.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("DiscountPercentage")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<DateTimeOffset>("EndDate")
                         .HasColumnType("datetimeoffset");
@@ -116,6 +115,35 @@ namespace Cinema.Infrastructure.Migrations
                     b.ToTable("Movies");
                 });
 
+            modelBuilder.Entity("Cinema.Domain.Entities.MovieSession", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CinemaHallId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CinemaHallId");
+
+                    b.HasIndex("MovieId");
+
+                    b.ToTable("MovieSessions");
+                });
+
             modelBuilder.Entity("Cinema.Domain.Entities.PaymentDetail", b =>
                 {
                     b.Property<int>("Id")
@@ -124,11 +152,14 @@ namespace Cinema.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("Method")
+                        .HasColumnType("int");
 
                     b.Property<int>("ReservationId")
                         .HasColumnType("int");
@@ -149,29 +180,21 @@ namespace Cinema.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("MovieId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MovieId1")
+                    b.Property<int>("MovieSessionId")
                         .HasColumnType("int");
 
                     b.Property<int>("NumberOfTickets")
                         .HasColumnType("int");
 
-                    b.Property<string>("PaymentDetailId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("TotalPrice")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("PaymentDetailId")
+                        .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MovieId1");
+                    b.HasIndex("MovieSessionId");
 
                     b.HasIndex("UserId");
 
@@ -267,17 +290,36 @@ namespace Cinema.Infrastructure.Migrations
 
             modelBuilder.Entity("ReservationSeat", b =>
                 {
-                    b.Property<int>("ReservationsId")
+                    b.Property<int>("ReservationId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SeatsId")
+                    b.Property<int>("SeatId")
                         .HasColumnType("int");
 
-                    b.HasKey("ReservationsId", "SeatsId");
+                    b.HasKey("ReservationId", "SeatId");
 
-                    b.HasIndex("SeatsId");
+                    b.HasIndex("SeatId");
 
-                    b.ToTable("ReservationSeats", (string)null);
+                    b.ToTable("ReservationSeat");
+                });
+
+            modelBuilder.Entity("Cinema.Domain.Entities.MovieSession", b =>
+                {
+                    b.HasOne("Cinema.Domain.Entities.CinemaHall", "CinemaHall")
+                        .WithMany("MovieSessions")
+                        .HasForeignKey("CinemaHallId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Cinema.Domain.Entities.Movie", "Movie")
+                        .WithMany("MovieSessions")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CinemaHall");
+
+                    b.Navigation("Movie");
                 });
 
             modelBuilder.Entity("Cinema.Domain.Entities.PaymentDetail", b =>
@@ -293,9 +335,9 @@ namespace Cinema.Infrastructure.Migrations
 
             modelBuilder.Entity("Cinema.Domain.Entities.Reservation", b =>
                 {
-                    b.HasOne("Cinema.Domain.Entities.Movie", "Movie")
+                    b.HasOne("Cinema.Domain.Entities.MovieSession", "MovieSession")
                         .WithMany()
-                        .HasForeignKey("MovieId1")
+                        .HasForeignKey("MovieSessionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -305,7 +347,7 @@ namespace Cinema.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Movie");
+                    b.Navigation("MovieSession");
 
                     b.Navigation("User");
                 });
@@ -344,24 +386,28 @@ namespace Cinema.Infrastructure.Migrations
                 {
                     b.HasOne("Cinema.Domain.Entities.Reservation", null)
                         .WithMany()
-                        .HasForeignKey("ReservationsId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("ReservationId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Cinema.Domain.Entities.Seat", null)
                         .WithMany()
-                        .HasForeignKey("SeatsId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("SeatId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("Cinema.Domain.Entities.CinemaHall", b =>
                 {
+                    b.Navigation("MovieSessions");
+
                     b.Navigation("Seats");
                 });
 
             modelBuilder.Entity("Cinema.Domain.Entities.Movie", b =>
                 {
+                    b.Navigation("MovieSessions");
+
                     b.Navigation("Reviews");
                 });
 

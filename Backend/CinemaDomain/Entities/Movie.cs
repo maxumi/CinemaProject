@@ -13,7 +13,7 @@ namespace Cinema.Domain.Entities
         public DateTime ReleaseDate { get; set; }
         public string Description { get; set; }
 
-        // Reviews
+        public ICollection<MovieSession> MovieSessions { get; set; }
         public ICollection<Review> Reviews { get; set; }
 
         // Average rating calculated from reviews

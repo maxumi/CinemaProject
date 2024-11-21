@@ -8,9 +8,9 @@ namespace Cinema.Domain.Entities
         public int UserId { get; set; }
         public User User { get; set; }
         public int NumberOfTickets { get; set; }
-        public string MovieId { get; set; }
-        public Movie Movie { get; set; }
-        public string PaymentDetailId { get; set; }
+        public int MovieSessionId { get; set; }
+        public MovieSession MovieSession { get; set; }
+        public int PaymentDetailId { get; set; }
         public PaymentDetail PaymentDetail { get; set; }
 
         // Many-to-Many Relationship with Seats

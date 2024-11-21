@@ -1,12 +1,17 @@
-﻿using Cinema.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Cinema.Domain.Entities;
 
 namespace Cinema.Infrastructure.Data
 {
     public class AppDbContext : DbContext
     {
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {
+        }
+
         public DbSet<User> Users { get; set; }
         public DbSet<Movie> Movies { get; set; }
+        public DbSet<MovieSession> MovieSessions { get; set; }
         public DbSet<CinemaHall> CinemaHalls { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<Seat> Seats { get; set; }
@@ -14,26 +19,47 @@ namespace Cinema.Infrastructure.Data
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Discount> Discounts { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Server=LAPTOP18;Database=CinemaDB;Trusted_Connection=True;TrustServerCertificate=True;");
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             // Many-to-Many Configuration for Reservation and Seat
+            // Many-to-Many Configuration for Reservation and Seat
             modelBuilder.Entity<Reservation>()
                 .HasMany(r => r.Seats)
                 .WithMany(s => s.Reservations)
-                .UsingEntity(j => j.ToTable("ReservationSeats")); // Table Name
+                .UsingEntity<Dictionary<string, object>>(
+                    "ReservationSeat", // Name of the implicit join table
+                    r => r.HasOne<Seat>()
+                          .WithMany()
+                          .HasForeignKey("SeatId")
+                          .OnDelete(DeleteBehavior.Restrict), // Prevent cascading delete on Seats
+                    s => s.HasOne<Reservation>()
+                          .WithMany()
+                          .HasForeignKey("ReservationId")
+                          .OnDelete(DeleteBehavior.Restrict) // Prevent cascading delete on Reservations
+                );
+
+
 
             // Configure One-to-One Relationship for PaymentDetail
             modelBuilder.Entity<Reservation>()
                 .HasOne(r => r.PaymentDetail)
                 .WithOne(p => p.Reservation)
                 .HasForeignKey<PaymentDetail>(p => p.ReservationId);
+
+            // Decimal Precision Configuration
+            modelBuilder.Entity<Discount>()
+                .Property(d => d.DiscountPercentage)
+                .HasColumnType("decimal(5,2)"); // Discount percentages (e.g., 99.99)
+
+            modelBuilder.Entity<MovieSession>()
+                .Property(ms => ms.Price)
+                .HasColumnType("decimal(18,2)"); // Movie session price (currency format)
+
+            modelBuilder.Entity<PaymentDetail>()
+                .Property(pd => pd.Amount)
+                .HasColumnType("decimal(18,2)"); // Payment amount (currency format)
         }
     }
 }
