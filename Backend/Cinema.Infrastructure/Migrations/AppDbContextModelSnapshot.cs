@@ -123,6 +123,9 @@ namespace Cinema.Infrastructure.Migrations
                     b.Property<int>("CinemaHallId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("MovieId")
                         .HasColumnType("int");
 

@@ -4,17 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cinema.Domain.Entities
+namespace Cinema.Application.DTOs.MovieSession
 {
-    public class MovieSession
+    public class CreateMovieSessionDto
     {
-        public int Id { get; set; }
         public int MovieId { get; set; }
-        public Movie Movie { get; set; }
-
         public int CinemaHallId { get; set; }
-        public CinemaHall CinemaHall { get; set; }
-
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public decimal Price { get; set; }

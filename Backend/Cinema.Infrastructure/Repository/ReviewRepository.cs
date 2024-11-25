@@ -26,11 +26,20 @@ namespace Cinema.Infrastructure.Repository
 
         public async Task<Review> GetByIdAsync(int id)
         {
-            return await _context.Reviews
+            var review = await _context.Reviews
                 .Include(r => r.Movie)
                 .Include(r => r.User)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (review == null)
+            {
+                throw new KeyNotFoundException($"Review with ID {id} not found.");
+            }
+
+            return review;
         }
+
 
         public async Task AddAsync(Review review)
         {

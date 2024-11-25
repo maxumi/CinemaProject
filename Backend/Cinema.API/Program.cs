@@ -1,5 +1,5 @@
 using Cinema.Application.Services;
-using Cinema.Infrastructure.Data; // For AppDbContext
+using Cinema.Infrastructure.Data;
 using Cinema.Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,6 +28,16 @@ namespace Cinema.API
             builder.Services.AddScoped<MovieService>();
             builder.Services.AddScoped<ReviewService>();
             builder.Services.AddScoped<ReviewRepository>();
+            builder.Services.AddScoped<CinemaHallService>();
+            builder.Services.AddScoped<CinemaHallRepository>();
+            builder.Services.AddScoped<MovieSessionRepository>();
+            builder.Services.AddScoped<MovieSessionService>();
+            builder.Services.AddScoped<ReservationRepository>();
+            builder.Services.AddScoped<ReservationService>();
+
+            // builder.Services.AddAutoMapper(typeof(Program));
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
