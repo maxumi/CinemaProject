@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Cinema.Application.DTOs;
+using AutoMapper;
 using Cinema.Application.DTOs.CinemaHall;
 using Cinema.Domain.Entities;
 using Cinema.Infrastructure.Repository;
@@ -12,16 +12,18 @@ namespace Cinema.Application.Services
     public class CinemaHallService
     {
         private readonly CinemaHallRepository _cinemaHallRepository;
+        private readonly IMapper _mapper;
 
-        public CinemaHallService(CinemaHallRepository cinemaHallRepository)
+        public CinemaHallService(CinemaHallRepository cinemaHallRepository, IMapper mapper)
         {
             _cinemaHallRepository = cinemaHallRepository;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<CinemaHallDto>> GetAllCinemaHallsAsync()
         {
             var cinemaHalls = await _cinemaHallRepository.GetAllAsync();
-            return cinemaHalls.Select(MapToCinemaHallDto);
+            return _mapper.Map<IEnumerable<CinemaHallDto>>(cinemaHalls);
         }
 
         public async Task<CinemaHallDto> GetCinemaHallByIdAsync(int id)
@@ -29,14 +31,15 @@ namespace Cinema.Application.Services
             var cinemaHall = await _cinemaHallRepository.GetByIdAsync(id);
             if (cinemaHall == null) throw new KeyNotFoundException($"Cinema hall with ID {id} not found.");
 
-            return MapToCinemaHallDto(cinemaHall);
+            return _mapper.Map<CinemaHallDto>(cinemaHall);
         }
 
         public async Task<CinemaHallDto> CreateCinemaHallAsync(CreateCinemaHallDto createCinemaHallDto)
         {
-            var cinemaHall = MapToCinemaHall(createCinemaHallDto);
+            var cinemaHall = _mapper.Map<CinemaHall>(createCinemaHallDto);
             await _cinemaHallRepository.AddAsync(cinemaHall);
-            return MapToCinemaHallDto(cinemaHall);
+
+            return _mapper.Map<CinemaHallDto>(cinemaHall);
         }
 
         public async Task UpdateCinemaHallAsync(int id, UpdateCinemaHallDto updateCinemaHallDto)
@@ -44,9 +47,7 @@ namespace Cinema.Application.Services
             var existingCinemaHall = await _cinemaHallRepository.GetByIdAsync(id);
             if (existingCinemaHall == null) throw new KeyNotFoundException($"Cinema hall with ID {id} not found.");
 
-            existingCinemaHall.Name = updateCinemaHallDto.Name;
-            existingCinemaHall.Capacity = updateCinemaHallDto.Capacity;
-
+            _mapper.Map(updateCinemaHallDto, existingCinemaHall);
             await _cinemaHallRepository.UpdateAsync(existingCinemaHall);
         }
 
@@ -57,19 +58,5 @@ namespace Cinema.Application.Services
 
             await _cinemaHallRepository.DeleteAsync(cinemaHall);
         }
-
-        // Mapping methods
-        private CinemaHallDto MapToCinemaHallDto(CinemaHall cinemaHall) => new CinemaHallDto
-        {
-            Id = cinemaHall.Id,
-            Name = cinemaHall.Name,
-            Capacity = cinemaHall.Capacity
-        };
-
-        private CinemaHall MapToCinemaHall(CreateCinemaHallDto dto) => new CinemaHall
-        {
-            Name = dto.Name,
-            Capacity = dto.Capacity
-        };
     }
 }

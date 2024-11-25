@@ -2,7 +2,7 @@
 
 namespace Cinema.Domain.Entities
 {
-    public class Reservation
+    public class Booking
     {
         public int Id { get; set; }
         public int UserId { get; set; }

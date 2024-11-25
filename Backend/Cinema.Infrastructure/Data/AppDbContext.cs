@@ -11,9 +11,10 @@ namespace Cinema.Infrastructure.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Movie> Movies { get; set; }
+        public DbSet<Genre> Genres { get; set; }
         public DbSet<MovieSession> MovieSessions { get; set; }
         public DbSet<CinemaHall> CinemaHalls { get; set; }
-        public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
         public DbSet<Seat> Seats { get; set; }
         public DbSet<PaymentDetail> PaymentDetails { get; set; }
         public DbSet<Review> Reviews { get; set; }
@@ -23,30 +24,46 @@ namespace Cinema.Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Many-to-Many Configuration for Reservation and Seat
-            // Many-to-Many Configuration for Reservation and Seat
-            modelBuilder.Entity<Reservation>()
-                .HasMany(r => r.Seats)
-                .WithMany(s => s.Reservations)
+            // Many-to-Many Configuration for Movie and Genre
+            modelBuilder.Entity<Movie>()
+                .HasMany(m => m.Genres)
+                .WithMany(g => g.Movies)
                 .UsingEntity<Dictionary<string, object>>(
-                    "ReservationSeat", // Name of the implicit join table
+                    "MovieGenre", // Name of the implicit join table
+                    m => m.HasOne<Genre>()
+                          .WithMany()
+                          .HasForeignKey("GenreId")
+                          .OnDelete(DeleteBehavior.Restrict), // Prevent cascading delete on Genres
+                    g => g.HasOne<Movie>()
+                          .WithMany()
+                          .HasForeignKey("MovieId")
+                          .OnDelete(DeleteBehavior.Restrict) // Prevent cascading delete on Movies
+                );
+
+
+            // Many-to-Many Configuration for Reservation and Seat
+            modelBuilder.Entity<Booking>()
+                .HasMany(r => r.Seats)
+                .WithMany(s => s.Bookings)
+                .UsingEntity<Dictionary<string, object>>(
+                    "BookingSeat", // Name of the implicit join table
                     r => r.HasOne<Seat>()
                           .WithMany()
                           .HasForeignKey("SeatId")
                           .OnDelete(DeleteBehavior.Restrict), // Prevent cascading delete on Seats
-                    s => s.HasOne<Reservation>()
+                    s => s.HasOne<Booking>()
                           .WithMany()
-                          .HasForeignKey("ReservationId")
+                          .HasForeignKey("BookingId")
                           .OnDelete(DeleteBehavior.Restrict) // Prevent cascading delete on Reservations
                 );
 
 
 
             // Configure One-to-One Relationship for PaymentDetail
-            modelBuilder.Entity<Reservation>()
+            modelBuilder.Entity<Booking>()
                 .HasOne(r => r.PaymentDetail)
-                .WithOne(p => p.Reservation)
-                .HasForeignKey<PaymentDetail>(p => p.ReservationId);
+                .WithOne(p => p.Booking)
+                .HasForeignKey<PaymentDetail>(p => p.BookingId);
 
             // Decimal Precision Configuration
             modelBuilder.Entity<Discount>()

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Cinema.Application.DTOs.User;
 using Cinema.Domain.Entities;
 using Cinema.Infrastructure.Repository;
@@ -11,10 +12,12 @@ namespace Cinema.Application.Services
     public class UserService
     {
         private readonly UserRepository _userRepository;
+        private readonly IMapper _mapper;
 
-        public UserService(UserRepository userRepository)
+        public UserService(UserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
@@ -23,7 +26,7 @@ namespace Cinema.Application.Services
             if (!users.Any())
                 throw new InvalidOperationException("No users found.");
 
-            return users.Select(MapToUserDto);
+            return _mapper.Map<IEnumerable<UserDto>>(users);
         }
 
         public async Task<UserDto> GetUserByIdAsync(int id)
@@ -33,7 +36,7 @@ namespace Cinema.Application.Services
             var user = await _userRepository.GetByIdAsync(id);
             if (user == null) throw new KeyNotFoundException($"User with ID {id} not found.");
 
-            return MapToUserDto(user);
+            return _mapper.Map<UserDto>(user);
         }
 
         public async Task<UserDto> CreateUserAsync(CreateUserDto createUserDto)
@@ -42,17 +45,10 @@ namespace Cinema.Application.Services
 
             ValidateCreateUserDto(createUserDto);
 
-            var user = new User
-            {
-                FirstName = createUserDto.FirstName,
-                LastName = createUserDto.LastName,
-                Email = createUserDto.Email,
-                Password = createUserDto.Password,
-                Role = createUserDto.Role
-            };
+            var user = _mapper.Map<User>(createUserDto);
             await _userRepository.AddAsync(user);
 
-            return MapToUserDto(user);
+            return _mapper.Map<UserDto>(user);
         }
 
         public async Task<bool> UpdateUserAsync(int id, UpdateUserDto updateUserDto)
@@ -62,7 +58,7 @@ namespace Cinema.Application.Services
             var existingUser = await _userRepository.GetByIdAsync(id);
             if (existingUser == null) throw new KeyNotFoundException($"User with ID {id} not found.");
 
-            UpdateUserFields(existingUser, updateUserDto);
+            _mapper.Map(updateUserDto, existingUser);
             await _userRepository.UpdateAsync(existingUser);
             return true;
         }
@@ -74,25 +70,6 @@ namespace Cinema.Application.Services
 
             await _userRepository.DeleteAsync(user);
             return true;
-        }
-
-        // Helper methods
-        private UserDto MapToUserDto(User user) => new UserDto
-        {
-            Id = user.Id,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Email = user.Email,
-            Role = user.Role
-        };
-
-
-        private void UpdateUserFields(User user, UpdateUserDto dto)
-        {
-            user.FirstName = dto.FirstName;
-            user.LastName = dto.LastName;
-            user.Email = dto.Email;
-            user.Role = dto.Role;
         }
 
         private void ValidateCreateUserDto(CreateUserDto dto)

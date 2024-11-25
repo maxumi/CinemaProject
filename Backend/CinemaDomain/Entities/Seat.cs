@@ -14,7 +14,7 @@ namespace Cinema.Domain.Entities
         public CinemaHall CinemaHall { get; set; }
 
         // Many to Many
-        public ICollection<Reservation> Reservations { get; set; }
+        public ICollection<Booking> Bookings { get; set; }
 
 
     }

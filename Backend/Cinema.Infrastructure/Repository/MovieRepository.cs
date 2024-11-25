@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Cinema.Domain.Entities;
 using Cinema.Infrastructure.Data;
@@ -17,12 +18,19 @@ namespace Cinema.Infrastructure.Repository
 
         public async Task<IEnumerable<Movie>> GetAllAsync()
         {
-            return await _context.Movies.Include(m => m.Reviews).AsNoTracking().ToListAsync();
+            return await _context.Movies
+                .Include(m => m.Reviews)
+                .Include(m => m.Genres) // Include genres for many-to-many relationship
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<Movie> GetByIdAsync(int id)
         {
-            return await _context.Movies.Include(m => m.Reviews).FirstOrDefaultAsync(m => m.Id == id);
+            return await _context.Movies
+                .Include(m => m.Reviews)
+                .Include(m => m.Genres) // Include genres for many-to-many relationship
+                .FirstOrDefaultAsync(m => m.Id == id);
         }
 
         public async Task AddAsync(Movie movie)
@@ -31,8 +39,33 @@ namespace Cinema.Infrastructure.Repository
             await _context.SaveChangesAsync();
         }
 
+        public async Task AddWithGenresAsync(Movie movie, List<int> genreIds)
+        {
+            // Attach genres
+            movie.Genres = await _context.Genres
+                .Where(g => genreIds.Contains(g.Id))
+                .ToListAsync();
+
+            await _context.Movies.AddAsync(movie);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task UpdateAsync(Movie movie)
         {
+            _context.Movies.Update(movie);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateWithGenresAsync(Movie movie, List<int> genreIds)
+        {
+            // Update genres
+            var genres = await _context.Genres
+                .Where(g => genreIds.Contains(g.Id))
+                .ToListAsync();
+
+            movie.Genres.Clear(); // Clear existing genres
+            movie.Genres = genres;
+
             _context.Movies.Update(movie);
             await _context.SaveChangesAsync();
         }

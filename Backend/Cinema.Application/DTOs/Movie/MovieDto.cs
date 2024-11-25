@@ -10,10 +10,9 @@ namespace Cinema.Application.DTOs.Movie
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public string Genre { get; set; }
         public int DurationMinutes { get; set; }
         public DateTime ReleaseDate { get; set; }
         public string Description { get; set; }
-        public double AverageRating { get; set; }
+        public List<string> Genres { get; set; } // Genre names
     }
 }

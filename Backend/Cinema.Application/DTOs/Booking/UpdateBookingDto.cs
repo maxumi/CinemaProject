@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cinema.Application.DTOs.Reservation
+namespace Cinema.Application.DTOs.Booking
 {
-    public class UpdateReservationDto
+    public class UpdateBookingDto
     {
         public int NumberOfTickets { get; set; }
         public int MovieSessionId { get; set; }

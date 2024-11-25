@@ -1,3 +1,5 @@
+using AutoMapper;
+using Cinema.Application;
 using Cinema.Application.Services;
 using Cinema.Infrastructure.Data;
 using Cinema.Infrastructure.Repository;
@@ -26,16 +28,18 @@ namespace Cinema.API
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<MovieRepository>();
             builder.Services.AddScoped<MovieService>();
+            builder.Services.AddScoped<GenreRepository>();
+            builder.Services.AddScoped<GenreService>();
             builder.Services.AddScoped<ReviewService>();
             builder.Services.AddScoped<ReviewRepository>();
             builder.Services.AddScoped<CinemaHallService>();
             builder.Services.AddScoped<CinemaHallRepository>();
             builder.Services.AddScoped<MovieSessionRepository>();
             builder.Services.AddScoped<MovieSessionService>();
-            builder.Services.AddScoped<ReservationRepository>();
-            builder.Services.AddScoped<ReservationService>();
+            builder.Services.AddScoped<BookingRepository>();
+            builder.Services.AddScoped<BookingService>();
 
-            // builder.Services.AddAutoMapper(typeof(Program));
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 
             var app = builder.Build();

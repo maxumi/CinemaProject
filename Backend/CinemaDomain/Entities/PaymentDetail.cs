@@ -18,7 +18,7 @@ namespace Cinema.Domain.Entities
         public decimal Amount { get; set; }
         public PaymentMethod Method { get; set; }
         public DateTime Date { get; set; }
-        public int ReservationId { get; set; }
-        public Reservation Reservation { get; set; }
+        public int BookingId { get; set; }
+        public Booking Booking { get; set; }
     }
 }
