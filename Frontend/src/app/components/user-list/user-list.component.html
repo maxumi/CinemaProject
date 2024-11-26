@@ -1,0 +1,38 @@
+<div *ngIf="users.length; else noUsers">
+  <h2>User List</h2>
+  <ul>
+    <li *ngFor="let user of users">
+      <strong>{{ user.firstName }} {{ user.lastName }}</strong> - {{ user.email }}
+      <strong>{{ user.role | roleDisplay }}</strong>
+      <button (click)="startEditUser(user)">Edit</button>
+      <button (click)="deleteUser(user.id)">Delete</button>
+    </li>
+  </ul>
+</div>
+<ng-template #noUsers>
+  <p>No users found.</p>
+</ng-template>
+
+<h2 *ngIf="!editUser">Add User</h2>
+<form *ngIf="!editUser" (ngSubmit)="addUser()">
+  <input [(ngModel)]="newUser.firstName" name="firstName" placeholder="First Name" required />
+  <input [(ngModel)]="newUser.lastName" name="lastName" placeholder="Last Name" required />
+  <input [(ngModel)]="newUser.email" name="email" placeholder="Email" required />
+  <input [(ngModel)]="newUser.password" name="password" type="password" placeholder="Password" required />
+  <select [(ngModel)]="newUser.role" name="role" required>
+    <option *ngFor="let role of [0, 1]" [value]="role">{{ role | roleDisplay }}</option>
+  </select>
+  <button type="submit">Add User</button>
+</form>
+
+<h2 *ngIf="editUser">Edit User</h2>
+<form *ngIf="editUser" (ngSubmit)="saveEditUser()">
+  <input [(ngModel)]="editUser.firstName" name="firstName" placeholder="First Name" required />
+  <input [(ngModel)]="editUser.lastName" name="lastName" placeholder="Last Name" required />
+  <input [(ngModel)]="editUser.email" name="email" placeholder="Email" required />
+  <select [(ngModel)]="editUser.role" name="role" required>
+    <option *ngFor="let role of [0, 1]" [value]="role">{{ role | roleDisplay }}</option>
+  </select>
+  <button type="submit">Save Changes</button>
+  <button type="button" (click)="editUser = undefined">Cancel</button>
+</form>

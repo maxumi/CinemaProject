@@ -23,6 +23,17 @@ namespace Cinema.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            // Add CORS configuration
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowFrontend", builder =>
+                {
+                    builder.WithOrigins("http://localhost:4200") // Frontend URL
+                           .AllowAnyHeader()
+                           .AllowAnyMethod();
+                });
+            });
+
             // For Service and Repos
             builder.Services.AddScoped<UserRepository>();
             builder.Services.AddScoped<UserService>();
@@ -52,6 +63,8 @@ namespace Cinema.API
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors("AllowFrontend");
 
             app.UseAuthorization();
 
