@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Cinema.Application.DTOs;
-using Cinema.Application.DTOs.Movie;
+﻿using Cinema.Application.DTOs.Movie;
 using Cinema.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
