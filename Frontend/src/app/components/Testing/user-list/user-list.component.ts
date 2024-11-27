@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { User, CreateUserDto, UpdateUserDto, Role } from '../../models/user.models';
-import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
-import { RoleDisplayPipe } from '../../pipes/role-display.pipe';
 import { FormsModule, NgModel } from '@angular/forms';
+import { RoleDisplayPipe } from '../../../pipes/role-display.pipe';
+import { CreateUserDto, Role, UpdateUserDto, User } from '../../../models/user.models';
+import { UserService } from '../../../services/Testing/user.service';
 
 @Component({
   selector: 'app-user-list',

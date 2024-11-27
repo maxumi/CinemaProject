@@ -1,0 +1,91 @@
+<section>
+    <!-- Movie Section -->
+    <div *ngIf="movies.length; else noMovies">
+      <h2>Movie List</h2>
+      <ul>
+        <li *ngFor="let movie of movies">
+          <div>
+            <strong>{{ movie.title }}</strong> 
+            <div>Duration: {{ movie.durationMinutes }} mins</div>
+            <div>Release Date: {{ movie.releaseDate | date: 'shortDate' }}</div>
+            <div>Genres: {{ movie.genres.join(', ') }}</div>
+          </div>
+          <div>
+            <button (click)="startEditMovie(movie)">Edit</button>
+            <button (click)="deleteMovie(movie.id)">Delete</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <ng-template #noMovies>
+      <p>No movies found.</p>
+    </ng-template>
+  </section>
+  
+  <section>
+    <h2 *ngIf="!editMovie">Add Movie</h2>
+    <form *ngIf="!editMovie" (ngSubmit)="addMovie()">
+      <input [(ngModel)]="newMovie.title" name="title" placeholder="Title" required />
+      <input [(ngModel)]="newMovie.durationMinutes" name="durationMinutes" type="number" placeholder="Duration Minutes" required />
+      <input [(ngModel)]="newMovie.releaseDate" name="releaseDate" type="date" required />
+      <textarea [(ngModel)]="newMovie.description" name="description" placeholder="Description"></textarea>
+  
+      <!-- Genres Select for New Movie -->
+      <label for="genres">Genres:</label>
+      <select [(ngModel)]="newMovie.genreIds" name="genres" multiple>
+        <option *ngFor="let genre of genres" [value]="genre.id">{{ genre.name }}</option>
+      </select>
+      <button type="submit">Add Movie</button>
+    </form>
+  
+    <h2 *ngIf="editMovie">Edit Movie</h2>
+    <form *ngIf="editMovie" (ngSubmit)="saveEditMovie()">
+      <input [(ngModel)]="editMovie.title" name="title" placeholder="Title" required />
+      <input [(ngModel)]="editMovie.durationMinutes" name="durationMinutes" type="number" placeholder="Duration Minutes" required />
+      <input [(ngModel)]="editMovie.releaseDate" name="releaseDate" type="date" required />
+      <textarea [(ngModel)]="editMovie.description" name="description" placeholder="Description"></textarea>
+  
+      <!-- Genres Select for Editing Movie -->
+      <label for="genres">Genres:</label>
+      <select [(ngModel)]="editMovie.genreIds" name="genres" multiple>
+        <option *ngFor="let genre of genres" [value]="genre.id">{{ genre.name }}</option>
+      </select>
+      <button type="submit">Save Changes</button>
+      <button type="button" (click)="cancelEditMovie()">Cancel</button>
+    </form>
+  </section>
+  
+  <section>
+    <!-- Genre Section -->
+    <div *ngIf="genres.length; else noGenres">
+      <h2>Genre List</h2>
+      <ul>
+        <li *ngFor="let genre of genres">
+          <div>{{ genre.name }}</div>
+          <div>
+            <button (click)="startEditGenre(genre)">Edit</button>
+            <button (click)="deleteGenre(genre.id)">Delete</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <ng-template #noGenres>
+      <p>No genres found.</p>
+    </ng-template>
+  </section>
+  
+  <section>
+    <h2 *ngIf="!editGenre">Add Genre</h2>
+    <form *ngIf="!editGenre" (ngSubmit)="addGenre()">
+      <input [(ngModel)]="newGenre.name" name="name" placeholder="Genre Name" required />
+      <button type="submit">Add Genre</button>
+    </form>
+  
+    <h2 *ngIf="editGenre">Edit Genre</h2>
+    <form *ngIf="editGenre" (ngSubmit)="saveEditGenre()">
+      <input [(ngModel)]="editGenre.name" name="name" placeholder="Genre Name" required />
+      <button type="submit">Save Changes</button>
+      <button type="button" (click)="cancelEditGenre()">Cancel</button>
+    </form>
+  </section>
+  
