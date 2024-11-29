@@ -52,8 +52,10 @@ namespace Cinema.Application
 
             // User mappings
             CreateMap<User, UserDto>().ReverseMap();
-            CreateMap<CreateUserDto, User>().ReverseMap();
-            CreateMap<UpdateUserDto, User>().ReverseMap();
+            CreateMap<CreateUserDto, User>()
+                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore()); // Hash password explicitly
+            CreateMap<UpdateUserDto, User>()
+                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore()); // Password should not be updated via this DTO
         }
     }
 

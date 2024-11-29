@@ -1,10 +1,35 @@
-<nav class="navbar">
-  <div class="container">
-    <a class="navbar-brand" routerLink="/">CinemaApp</a>
-    <ul class="navbar-links">
-      <li><a routerLink="/movies" routerLinkActive="active">Movies</a></li>
-      <li><a routerLink="/profile" routerLinkActive="active">Profile</a></li>
-      <li><a routerLink="/login" routerLinkActive="active">Login</a></li>
+<nav class="bg-gradient-to-r from-red-900 to-red-700 text-gold shadow-lg sticky top-0 z-50">
+  <div class="container mx-auto flex items-center justify-between py-4 px-6">
+    <a 
+      class="text-xl font-bold text-yellow-400 hover:text-yellow-300 cursor-pointer" 
+      routerLink="/">
+      CinemaApp
+    </a>
+    <ul class="flex space-x-6">
+      <li>
+        <a 
+          routerLink="/movies" 
+          routerLinkActive="font-semibold border-b-2 border-yellow-400"
+          class="text-yellow-400 hover:text-yellow-300 cursor-pointer transition-all">
+          Movies
+        </a>
+      </li>
+      <li>
+        <a 
+          routerLink="/profile" 
+          routerLinkActive="font-semibold border-b-2 border-yellow-400"
+          class="text-yellow-400 hover:text-yellow-300 cursor-pointer transition-all">
+          Profile
+        </a>
+      </li>
+      <li>
+        <a 
+          routerLink="/login" 
+          routerLinkActive="font-semibold border-b-2 border-yellow-400"
+          class="text-yellow-400 hover:text-yellow-300 cursor-pointer transition-all">
+          Login
+        </a>
+      </li>
     </ul>
   </div>
 </nav>

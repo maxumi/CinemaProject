@@ -43,5 +43,11 @@ namespace Cinema.Infrastructure.Repository
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
         }
+
+
+        public async Task<User> GetByEmailAsync(string email)
+        {
+            return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email);
+        }
     }
 }

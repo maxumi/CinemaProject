@@ -1,157 +1,85 @@
-/* General layout styles */
-.movie-list {
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-    font-family: Arial, sans-serif;
-}
-
 .movie-list h2 {
-    text-align: center;
-    font-size: 2rem;
     margin-bottom: 20px;
-    font-weight: bold;
-    color: #ffd700; /* Gold text for the title */
-    text-transform: uppercase;
-}
-
-/* Movie grid */
-ul {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-/* Movie card */
-.movie-card {
-    background: linear-gradient(135deg, #FFD700, #FFCC66);  /* Gold background for cards */
-    border: 2px solid #4b0909; /* Deep red border */
+  }
+  
+  .movie-card {
+    background: linear-gradient(135deg, #FFD700, #FFCC66);
     border-radius: 10px;
     padding: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
     transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.movie-card:hover {
+  }
+  
+  .movie-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.4); /* Stronger shadow on hover */
-}
-
-/* Movie header */
-.movie-header {
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.4);
+  }
+  
+  .movie-header {
     display: flex;
     flex-direction: column;
     gap: 5px;
-}
-
-.movie-title {
+  }
+  
+  .movie-title {
     font-size: 1.5rem;
-    color: #4b0909; /* Deep red for movie title */
+    color: #4b0909;
     margin: 0;
     font-weight: bold;
     text-transform: uppercase;
-}
-
-.movie-details p {
+  }
+  
+  .movie-details p {
     margin: 5px 0;
     font-size: 1rem;
-    color: #4b0909; /* Deep red for text */
-}
-
-.movie-details p strong {
-    color: #000; /* Black for emphasis */
-}
-
-.movie-description {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-}
-
-.description-toggle {
-    color: #4b0909; /* Deep red for the link */
+    color: #4b0909;
+  }
+  
+  .movie-details p strong {
+    color: #000;
+  }
+  
+  .description-toggle {
+    color: #4b0909;
     text-decoration: underline;
     cursor: pointer;
     font-weight: bold;
-}
-
-/* Movie sessions */
-.movie-sessions {
-    border-top: 2px solid #4b0909; /* Deep red divider */
+  }
+  
+  .movie-sessions {
+    border-top: 2px solid #4b0909;
     padding-top: 10px;
-}
-
-.session-header {
+  }
+  
+  .session-header {
     font-size: 1.2rem;
     font-weight: bold;
-    color: #4b0909; /* Deep red for headers */
+    color: #4b0909;
     margin-bottom: 10px;
-}
-
-.session-list {
+  }
+  
+  .session-list {
     display: flex;
     flex-direction: column;
-    gap: 5px; /* Smaller gap for compactness */
-    align-items: center; /* Center session items */
-}
-
-.session-item {
-    background: linear-gradient(135deg, #4b0909, #7e1a1a); /* Deep red gradient for sessions */
-    color: #ffd700; /* Gold text for sessions */
-    border-radius: 5px;
-    padding: 5px 10px; /* Smaller padding for compactness */
-    text-align: center;
-    font-size: 0.9rem; /* Smaller font size */
-    font-weight: bold;
-    width: 70%; /* Smaller width */
-    transition: background-color 0.2s ease;
-}
-
-.session-item:hover {
-    background-color: #ffd700; /* Gold background on hover */
-    color: #e0e0e0; /* Deep red text on hover */
-    cursor: pointer;
-}
-
-/* Pagination */
-.pagination {
-    display: flex;
-    justify-content: center;
+    gap: 5px;
     align-items: center;
-    margin-top: 20px;
-    gap: 10px;
-}
-
-.pagination button {
-    background: linear-gradient(135deg, #4b0909, #7e1a1a); /* Gradient for buttons */
-    color: #ffd700; /* Gold text */
-    border: none;
+  }
+  
+  .session-item {
+    background: linear-gradient(135deg, #4b0909, #7e1a1a);
+    color: #ffd700;
     border-radius: 5px;
-    padding: 10px 15px;
-    cursor: pointer;
-    font-size: 1rem;
+    padding: 5px 10px;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: bold;
+    width: 70%;
     transition: background-color 0.2s ease;
-}
-
-.pagination button:hover {
-    background-color: #ffd700; /* Gold hover background */
-    color: #4b0909; /* Deep red hover text */
-}
-
-.pagination button:disabled {
-    background-color: #666; /* Gray for disabled */
-    color: #ddd;
-    cursor: not-allowed;
-}
-
-.pagination span {
-    font-size: 1rem;
-    color: #ffd700; /* Gold text for page info */
-}
+  }
+  
+  .session-item:hover {
+    background-color: #ffd700;
+    color: #e0e0e0;
+    cursor: pointer;
+  }
+  

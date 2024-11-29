@@ -1,38 +1,52 @@
-<div class="movie-list">
-    <h2>Movies</h2>
-    <ul>
-      <li *ngFor="let movie of paginatedMovies" class="movie-card">
-        <div class="movie-header">
-          <h3 class="movie-title">{{ movie.title }}</h3>
-          <div class="movie-details">
-            <p><strong>Duration:</strong> {{ movie.durationMinutes }} minutes</p>
-            <p><strong>Release Date:</strong> {{ movie.releaseDate | date: 'longDate' }}</p>
-            <p class="movie-description">
-              <strong>Description:</strong>
-              <span *ngIf="!isExpanded(movie.id)">{{ movie.description | slice: 0:100 }}...</span>
-              <span *ngIf="isExpanded(movie.id)">{{ movie.description }}</span>
-              <a href="javascript:void(0)" (click)="toggleDescription(movie.id)" class="description-toggle">
-                {{ isExpanded(movie.id) ? 'Show Less' : 'Read More' }}
-              </a>
-            </p>
+<div class="movie-list max-w-7xl mx-auto p-5 font-sans">
+  <h2 class="text-3xl font-bold text-center text-yellow-400 uppercase mb-5">Movies</h2>
+  <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <li *ngFor="let movie of paginatedMovies" class="movie-card">
+      <div class="movie-header">
+        <h3 class="movie-title">{{ movie.title }}</h3>
+        <div class="movie-details">
+          <p><strong>Duration:</strong> {{ movie.durationMinutes }} minutes</p>
+          <p><strong>Release Date:</strong> {{ movie.releaseDate | date: 'longDate' }}</p>
+          <p class="movie-description">
+            <strong>Description:</strong>
+            <span *ngIf="!isExpanded(movie.id)">{{ movie.description | slice: 0:100 }}...</span>
+            <span *ngIf="isExpanded(movie.id)">{{ movie.description }}</span>
+            <a
+              href="javascript:void(0)"
+              (click)="toggleDescription(movie.id)"
+              class="description-toggle"
+            >
+              {{ isExpanded(movie.id) ? 'Show Less' : 'Read More' }}
+            </a>
+          </p>
+        </div>
+      </div>
+      <div class="movie-sessions">
+        <div class="session-header">Showings</div>
+        <div class="session-list">
+          <div *ngFor="let session of getSessionsForMovie(movie.id)" class="session-item">
+            <div>{{ session.startTime | date: 'shortTime' }}</div>
+            <div>Hall: {{ session.cinemaHall?.name }}</div>
           </div>
         </div>
-        <div class="movie-sessions">
-            <div class="session-header">Showings</div>
-            <div class="session-list">
-              <div *ngFor="let session of getSessionsForMovie(movie.id)" class="session-item">
-                <div class="time">{{ session.startTime | date: 'shortTime' }}</div>
-                <div class="hall">Hall: {{ session.cinemaHall?.name }}</div>
-              </div>
-            </div>
-          </div>
-          
-      </li>
-    </ul>
-    <div class="pagination">
-      <button (click)="goToPreviousPage()" [disabled]="currentPage === 1">Previous</button>
-      <span>Page {{ currentPage }} of {{ totalPages }}</span>
-      <button (click)="goToNextPage()" [disabled]="currentPage === totalPages">Next</button>
-    </div>
+      </div>
+    </li>
+  </ul>
+  <div class="pagination flex justify-center items-center gap-4 mt-6">
+    <button
+      (click)="goToPreviousPage()"
+      [disabled]="currentPage === 1"
+      class="bg-gradient-to-br from-red-800 to-red-600 text-yellow-400 rounded-md py-2 px-4 font-bold transition hover:bg-yellow-400 hover:text-red-800 disabled:bg-gray-600 disabled:text-gray-300 disabled:cursor-not-allowed"
+    >
+      Previous
+    </button>
+    <span class="text-lg text-yellow-400">Page {{ currentPage }} of {{ totalPages }}</span>
+    <button
+      (click)="goToNextPage()"
+      [disabled]="currentPage === totalPages"
+      class="bg-gradient-to-br from-red-800 to-red-600 text-yellow-400 rounded-md py-2 px-4 font-bold transition hover:bg-yellow-400 hover:text-red-800 disabled:bg-gray-600 disabled:text-gray-300 disabled:cursor-not-allowed"
+    >
+      Next
+    </button>
   </div>
-  
+</div>
