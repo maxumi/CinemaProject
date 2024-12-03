@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Cinema.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -46,13 +48,25 @@ namespace Cinema.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Genres",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Genres", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Movies",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Genre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DurationMinutes = table.Column<int>(type: "int", nullable: false),
                     ReleaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -71,7 +85,7 @@ namespace Cinema.Infrastructure.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Role = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -97,6 +111,30 @@ namespace Cinema.Infrastructure.Migrations
                         principalTable: "CinemaHalls",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MovieGenre",
+                columns: table => new
+                {
+                    MovieId = table.Column<int>(type: "int", nullable: false),
+                    GenreId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MovieGenre", x => new { x.MovieId, x.GenreId });
+                    table.ForeignKey(
+                        name: "FK_MovieGenre_Genres_GenreId",
+                        column: x => x.GenreId,
+                        principalTable: "Genres",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_MovieGenre_Movies_MovieId",
+                        column: x => x.MovieId,
+                        principalTable: "Movies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -158,7 +196,7 @@ namespace Cinema.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Reservations",
+                name: "Bookings",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -170,19 +208,43 @@ namespace Cinema.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Reservations", x => x.Id);
+                    table.PrimaryKey("PK_Bookings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Reservations_MovieSessions_MovieSessionId",
+                        name: "FK_Bookings_MovieSessions_MovieSessionId",
                         column: x => x.MovieSessionId,
                         principalTable: "MovieSessions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Reservations_Users_UserId",
+                        name: "FK_Bookings_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BookingSeat",
+                columns: table => new
+                {
+                    BookingId = table.Column<int>(type: "int", nullable: false),
+                    SeatId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookingSeat", x => new { x.BookingId, x.SeatId });
+                    table.ForeignKey(
+                        name: "FK_BookingSeat_Bookings_BookingId",
+                        column: x => x.BookingId,
+                        principalTable: "Bookings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BookingSeat_Seats_SeatId",
+                        column: x => x.SeatId,
+                        principalTable: "Seats",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -194,42 +256,143 @@ namespace Cinema.Infrastructure.Migrations
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Method = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ReservationId = table.Column<int>(type: "int", nullable: false)
+                    BookingId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PaymentDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PaymentDetails_Reservations_ReservationId",
-                        column: x => x.ReservationId,
-                        principalTable: "Reservations",
+                        name: "FK_PaymentDetails_Bookings_BookingId",
+                        column: x => x.BookingId,
+                        principalTable: "Bookings",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "ReservationSeat",
-                columns: table => new
+            migrationBuilder.InsertData(
+                table: "CinemaHalls",
+                columns: new[] { "Id", "Capacity", "Name" },
+                values: new object[,]
                 {
-                    ReservationId = table.Column<int>(type: "int", nullable: false),
-                    SeatId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ReservationSeat", x => new { x.ReservationId, x.SeatId });
-                    table.ForeignKey(
-                        name: "FK_ReservationSeat_Reservations_ReservationId",
-                        column: x => x.ReservationId,
-                        principalTable: "Reservations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_ReservationSeat_Seats_SeatId",
-                        column: x => x.SeatId,
-                        principalTable: "Seats",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                    { 1, 150, "Hall A" },
+                    { 2, 100, "Hall B" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "Discounts",
+                columns: new[] { "Id", "Code", "Description", "DiscountPercentage", "EndDate", "IsUnlimited", "IsUsed", "StartDate", "Title" },
+                values: new object[,]
+                {
+                    { 1, null, "10% off for the holiday season", 10m, new DateTimeOffset(new DateTime(2025, 1, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 1, 0, 0, 0)), true, false, new DateTimeOffset(new DateTime(2024, 12, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 1, 0, 0, 0)), "Holiday Special" },
+                    { 2, "NEWUSER2024", "15% off for new users", 15m, new DateTimeOffset(new DateTime(2024, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 1, 0, 0, 0)), false, false, new DateTimeOffset(new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 1, 0, 0, 0)), "New User Promo" },
+                    { 3, "BLACKFRIDAY", "50% off for Black Friday", 50m, new DateTimeOffset(new DateTime(2024, 11, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 1, 0, 0, 0)), false, false, new DateTimeOffset(new DateTime(2024, 11, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 1, 0, 0, 0)), "Black Friday Deal" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Genres",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Action" },
+                    { 2, "Comedy" },
+                    { 3, "Drama" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Movies",
+                columns: new[] { "Id", "Description", "DurationMinutes", "ReleaseDate", "Title" },
+                values: new object[,]
+                {
+                    { 1, "An action-packed thriller about a hero saving the day.", 120, new DateTime(2023, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "The Action Hero" },
+                    { 2, "A hilarious comedy to keep you entertained.", 90, new DateTime(2023, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Comedy Nights" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "Email", "FirstName", "LastName", "PasswordHash", "Role" },
+                values: new object[,]
+                {
+                    { 1, "john.doe@example.com", "John", "Doe", "hashedpassword1", 0 },
+                    { 2, "jane.smith@example.com", "Jane", "Smith", "hashedpassword2", 1 },
+                    { 3, "alice.brown@example.com", "Alice", "Brown", "hashedpassword3", 0 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "MovieGenre",
+                columns: new[] { "GenreId", "MovieId" },
+                values: new object[,]
+                {
+                    { 1, 1 },
+                    { 2, 2 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "MovieSessions",
+                columns: new[] { "Id", "CinemaHallId", "EndTime", "MovieId", "Price", "StartTime" },
+                values: new object[,]
+                {
+                    { 1, 1, new DateTime(2024, 12, 1, 20, 0, 0, 0, DateTimeKind.Unspecified), 1, 12.50m, new DateTime(2024, 12, 1, 18, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, 2, new DateTime(2024, 12, 2, 16, 30, 0, 0, DateTimeKind.Unspecified), 2, 10.00m, new DateTime(2024, 12, 2, 15, 0, 0, 0, DateTimeKind.Unspecified) }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Reviews",
+                columns: new[] { "Id", "Comment", "MovieId", "Rating", "ReviewDate", "UserId" },
+                values: new object[,]
+                {
+                    { 1, "Amazing action sequences!", 1, 5, new DateTime(2024, 12, 2, 14, 30, 0, 0, DateTimeKind.Unspecified), 1 },
+                    { 2, "Hilarious from start to finish.", 2, 4, new DateTime(2024, 12, 2, 14, 30, 0, 0, DateTimeKind.Unspecified), 2 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Seats",
+                columns: new[] { "Id", "CinemaHallId", "SeatNumber" },
+                values: new object[,]
+                {
+                    { 1, 1, "A1" },
+                    { 2, 1, "A2" },
+                    { 3, 2, "B1" },
+                    { 4, 2, "B2" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Bookings",
+                columns: new[] { "Id", "MovieSessionId", "NumberOfTickets", "PaymentDetailId", "UserId" },
+                values: new object[] { 1, 1, 2, 1, 1 });
+
+            migrationBuilder.InsertData(
+                table: "BookingSeat",
+                columns: new[] { "BookingId", "SeatId" },
+                values: new object[,]
+                {
+                    { 1, 1 },
+                    { 1, 2 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "PaymentDetails",
+                columns: new[] { "Id", "Amount", "BookingId", "Date", "Method" },
+                values: new object[] { 1, 25.00m, 1, new DateTime(2024, 12, 1, 19, 0, 0, 0, DateTimeKind.Unspecified), 0 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bookings_MovieSessionId",
+                table: "Bookings",
+                column: "MovieSessionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bookings_UserId",
+                table: "Bookings",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookingSeat_SeatId",
+                table: "BookingSeat",
+                column: "SeatId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MovieGenre_GenreId",
+                table: "MovieGenre",
+                column: "GenreId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MovieSessions_CinemaHallId",
@@ -242,25 +405,10 @@ namespace Cinema.Infrastructure.Migrations
                 column: "MovieId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PaymentDetails_ReservationId",
+                name: "IX_PaymentDetails_BookingId",
                 table: "PaymentDetails",
-                column: "ReservationId",
+                column: "BookingId",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reservations_MovieSessionId",
-                table: "Reservations",
-                column: "MovieSessionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reservations_UserId",
-                table: "Reservations",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ReservationSeat_SeatId",
-                table: "ReservationSeat",
-                column: "SeatId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_MovieId",
@@ -282,22 +430,28 @@ namespace Cinema.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "BookingSeat");
+
+            migrationBuilder.DropTable(
                 name: "Discounts");
+
+            migrationBuilder.DropTable(
+                name: "MovieGenre");
 
             migrationBuilder.DropTable(
                 name: "PaymentDetails");
 
             migrationBuilder.DropTable(
-                name: "ReservationSeat");
-
-            migrationBuilder.DropTable(
                 name: "Reviews");
 
             migrationBuilder.DropTable(
-                name: "Reservations");
+                name: "Seats");
 
             migrationBuilder.DropTable(
-                name: "Seats");
+                name: "Genres");
+
+            migrationBuilder.DropTable(
+                name: "Bookings");
 
             migrationBuilder.DropTable(
                 name: "MovieSessions");

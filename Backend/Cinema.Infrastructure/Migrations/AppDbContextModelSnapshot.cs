@@ -35,6 +35,18 @@ namespace Cinema.Infrastructure.Migrations
                     b.HasIndex("SeatId");
 
                     b.ToTable("BookingSeat");
+
+                    b.HasData(
+                        new
+                        {
+                            BookingId = 1,
+                            SeatId = 1
+                        },
+                        new
+                        {
+                            BookingId = 1,
+                            SeatId = 2
+                        });
                 });
 
             modelBuilder.Entity("Cinema.Domain.Entities.Booking", b =>
@@ -64,6 +76,16 @@ namespace Cinema.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Bookings");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            MovieSessionId = 1,
+                            NumberOfTickets = 2,
+                            PaymentDetailId = 1,
+                            UserId = 1
+                        });
                 });
 
             modelBuilder.Entity("Cinema.Domain.Entities.CinemaHall", b =>
@@ -84,6 +106,20 @@ namespace Cinema.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CinemaHalls");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Capacity = 150,
+                            Name = "Hall A"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Capacity = 100,
+                            Name = "Hall B"
+                        });
                 });
 
             modelBuilder.Entity("Cinema.Domain.Entities.Discount", b =>
@@ -123,6 +159,43 @@ namespace Cinema.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Discounts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "10% off for the holiday season",
+                            DiscountPercentage = 10m,
+                            EndDate = new DateTimeOffset(new DateTime(2025, 1, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 1, 0, 0, 0)),
+                            IsUnlimited = true,
+                            IsUsed = false,
+                            StartDate = new DateTimeOffset(new DateTime(2024, 12, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 1, 0, 0, 0)),
+                            Title = "Holiday Special"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Code = "NEWUSER2024",
+                            Description = "15% off for new users",
+                            DiscountPercentage = 15m,
+                            EndDate = new DateTimeOffset(new DateTime(2024, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 1, 0, 0, 0)),
+                            IsUnlimited = false,
+                            IsUsed = false,
+                            StartDate = new DateTimeOffset(new DateTime(2024, 11, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 1, 0, 0, 0)),
+                            Title = "New User Promo"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Code = "BLACKFRIDAY",
+                            Description = "50% off for Black Friday",
+                            DiscountPercentage = 50m,
+                            EndDate = new DateTimeOffset(new DateTime(2024, 11, 30, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 1, 0, 0, 0)),
+                            IsUnlimited = false,
+                            IsUsed = false,
+                            StartDate = new DateTimeOffset(new DateTime(2024, 11, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 1, 0, 0, 0)),
+                            Title = "Black Friday Deal"
+                        });
                 });
 
             modelBuilder.Entity("Cinema.Domain.Entities.Genre", b =>
@@ -140,6 +213,23 @@ namespace Cinema.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Genres");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Action"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Comedy"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Drama"
+                        });
                 });
 
             modelBuilder.Entity("Cinema.Domain.Entities.Movie", b =>
@@ -167,6 +257,24 @@ namespace Cinema.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Movies");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "An action-packed thriller about a hero saving the day.",
+                            DurationMinutes = 120,
+                            ReleaseDate = new DateTime(2023, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "The Action Hero"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "A hilarious comedy to keep you entertained.",
+                            DurationMinutes = 90,
+                            ReleaseDate = new DateTime(2023, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "Comedy Nights"
+                        });
                 });
 
             modelBuilder.Entity("Cinema.Domain.Entities.MovieSession", b =>
@@ -199,6 +307,26 @@ namespace Cinema.Infrastructure.Migrations
                     b.HasIndex("MovieId");
 
                     b.ToTable("MovieSessions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CinemaHallId = 1,
+                            EndTime = new DateTime(2024, 12, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            MovieId = 1,
+                            Price = 12.50m,
+                            StartTime = new DateTime(2024, 12, 1, 18, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CinemaHallId = 2,
+                            EndTime = new DateTime(2024, 12, 2, 16, 30, 0, 0, DateTimeKind.Unspecified),
+                            MovieId = 2,
+                            Price = 10.00m,
+                            StartTime = new DateTime(2024, 12, 2, 15, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("Cinema.Domain.Entities.PaymentDetail", b =>
@@ -227,6 +355,16 @@ namespace Cinema.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("PaymentDetails");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Amount = 25.00m,
+                            BookingId = 1,
+                            Date = new DateTime(2024, 12, 1, 19, 0, 0, 0, DateTimeKind.Unspecified),
+                            Method = 0
+                        });
                 });
 
             modelBuilder.Entity("Cinema.Domain.Entities.Review", b =>
@@ -260,6 +398,26 @@ namespace Cinema.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Reviews");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Comment = "Amazing action sequences!",
+                            MovieId = 1,
+                            Rating = 5,
+                            ReviewDate = new DateTime(2024, 12, 2, 14, 30, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Comment = "Hilarious from start to finish.",
+                            MovieId = 2,
+                            Rating = 4,
+                            ReviewDate = new DateTime(2024, 12, 2, 14, 30, 0, 0, DateTimeKind.Unspecified),
+                            UserId = 2
+                        });
                 });
 
             modelBuilder.Entity("Cinema.Domain.Entities.Seat", b =>
@@ -282,6 +440,32 @@ namespace Cinema.Infrastructure.Migrations
                     b.HasIndex("CinemaHallId");
 
                     b.ToTable("Seats");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CinemaHallId = 1,
+                            SeatNumber = "A1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CinemaHallId = 1,
+                            SeatNumber = "A2"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CinemaHallId = 2,
+                            SeatNumber = "B1"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CinemaHallId = 2,
+                            SeatNumber = "B2"
+                        });
                 });
 
             modelBuilder.Entity("Cinema.Domain.Entities.User", b =>
@@ -314,21 +498,62 @@ namespace Cinema.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "john.doe@example.com",
+                            FirstName = "John",
+                            LastName = "Doe",
+                            PasswordHash = "hashedpassword1",
+                            Role = 0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Email = "jane.smith@example.com",
+                            FirstName = "Jane",
+                            LastName = "Smith",
+                            PasswordHash = "hashedpassword2",
+                            Role = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Email = "alice.brown@example.com",
+                            FirstName = "Alice",
+                            LastName = "Brown",
+                            PasswordHash = "hashedpassword3",
+                            Role = 0
+                        });
                 });
 
             modelBuilder.Entity("MovieGenre", b =>
                 {
-                    b.Property<int>("GenreId")
-                        .HasColumnType("int");
-
                     b.Property<int>("MovieId")
                         .HasColumnType("int");
 
-                    b.HasKey("GenreId", "MovieId");
+                    b.Property<int>("GenreId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("MovieId");
+                    b.HasKey("MovieId", "GenreId");
+
+                    b.HasIndex("GenreId");
 
                     b.ToTable("MovieGenre");
+
+                    b.HasData(
+                        new
+                        {
+                            MovieId = 1,
+                            GenreId = 1
+                        },
+                        new
+                        {
+                            MovieId = 2,
+                            GenreId = 2
+                        });
                 });
 
             modelBuilder.Entity("BookingSeat", b =>

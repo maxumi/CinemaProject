@@ -29,15 +29,16 @@ namespace Cinema.Infrastructure.Data
                 .HasMany(m => m.Genres)
                 .WithMany(g => g.Movies)
                 .UsingEntity<Dictionary<string, object>>(
-                    "MovieGenre", // Name of the implicit join table
-                    m => m.HasOne<Genre>()
+                    "MovieGenre", // Explicit name for the join table
+                    j => j.HasOne<Genre>()
                           .WithMany()
                           .HasForeignKey("GenreId")
-                          .OnDelete(DeleteBehavior.Restrict), // Prevent cascading delete on Genres
-                    g => g.HasOne<Movie>()
+                          .OnDelete(DeleteBehavior.Restrict),
+                    j => j.HasOne<Movie>()
                           .WithMany()
                           .HasForeignKey("MovieId")
-                          .OnDelete(DeleteBehavior.Restrict) // Prevent cascading delete on Movies
+                          .OnDelete(DeleteBehavior.Restrict),
+                    j => j.HasKey("MovieId", "GenreId") // Define composite key
                 );
 
 
@@ -77,6 +78,9 @@ namespace Cinema.Infrastructure.Data
             modelBuilder.Entity<PaymentDetail>()
                 .Property(pd => pd.Amount)
                 .HasColumnType("decimal(18,2)"); // Payment amount (currency format)
+
+
+            modelBuilder.Seed(); // Seed data with premade ones
         }
     }
 }
