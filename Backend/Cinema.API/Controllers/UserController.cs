@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using Cinema.Application.DTOs.User;
 using Cinema.Application.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Cinema.API.Controllers
 {
@@ -12,10 +16,13 @@ namespace Cinema.API.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserService _userService;
-
-        public UserController(UserService userService)
+        private readonly AuthService _authService;
+        private readonly IConfiguration _configuration;
+        public UserController(UserService userService,AuthService authService, IConfiguration configuration)
         {
             _userService = userService;
+            _authService = authService;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -33,6 +40,29 @@ namespace Cinema.API.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "An error occurred while retrieving users.", details = ex.Message });
+            }
+        }
+
+        [HttpGet("current-user")]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            var token = Request.Cookies["jwt"];
+            try
+            {
+                var currentUser = await _authService.GetCurrentUserAsync(token);
+                return Ok(currentUser);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while retrieving the current user.", details = ex.Message });
             }
         }
 
@@ -90,7 +120,8 @@ namespace Cinema.API.Controllers
                 var result = await _userService.UpdateUserAsync(id, updateUserDto);
                 if (!result) return NotFound();
 
-                return NoContent();
+                var updatedUser = await _userService.GetUserByIdAsync(id);
+                return Ok(updatedUser);
             }
             catch (KeyNotFoundException ex)
             {

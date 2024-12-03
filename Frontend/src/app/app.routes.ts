@@ -3,6 +3,7 @@ import { UserListComponent } from './components/Testing/user-list/user-list.comp
 import { MovieListComponent } from './components/movie-list/movie-list.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 
 export const routes: Routes = [
@@ -11,7 +12,7 @@ export const routes: Routes = [
     component: UserListComponent
     },
     {
-        path: "movie",
+        path: "movies",
         component: MovieListComponent
     },
     {
@@ -19,4 +20,5 @@ export const routes: Routes = [
         component: LoginComponent
     },
     { path: 'register', component: RegisterComponent },
+    {path: 'profile', component: ProfileComponent}
 ];

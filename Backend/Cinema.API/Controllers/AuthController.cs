@@ -80,7 +80,11 @@ namespace Cinema.API.Controllers
             var token = Request.Cookies["jwt"];
             if (string.IsNullOrEmpty(token))
             {
-                return Unauthorized(new { message = "No valid session found" });
+                return Unauthorized(new
+                {
+                    isValid = false,
+                    message = "No valid session found"
+                });
             }
 
             try
@@ -96,18 +100,38 @@ namespace Cinema.API.Controllers
                     IssuerSigningKey = new SymmetricSecurityKey(key)
                 }, out _);
 
-                return Ok(new { message = "Token is valid" });
+                return Ok(new
+                {
+                    isValid = true,
+                    message = "Token is valid"
+                });
             }
             catch
             {
-                return Unauthorized(new { message = "Invalid or expired token" });
+                return Unauthorized(new
+                {
+                    isValid = false,
+                    message = "Invalid or expired token"
+                });
             }
         }
+
 
         [HttpPost("logout")]
         public IActionResult Logout()
         {
-            Response.Cookies.Delete("jwt");
+            // Optionally, invalidate the token on the server-side here (e.g., using a blacklist).
+
+            // Explicitly set an expired cookie
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true, // Use Secure = true in production for HTTPS
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.AddDays(-1) // Expire immediately
+            };
+
+            Response.Cookies.Append("jwt", "", cookieOptions);
             return Ok(new { message = "Logged out successfully" });
         }
     }

@@ -7,6 +7,7 @@ using Cinema.Domain.Entities;
 using Cinema.Infrastructure.Repository;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Cinema.Application.DTOs.User;
 
 namespace Cinema.Application.Services
 {
@@ -75,6 +76,66 @@ namespace Cinema.Application.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        public async Task<UserDto> GetCurrentUserAsync(string token)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                throw new UnauthorizedAccessException("No valid session found");
+            }
+
+            try
+            {
+                // Validate the token
+                var handler = new JwtSecurityTokenHandler();
+                var key = Encoding.UTF8.GetBytes(_configuration["JwtSettings:SecretKey"]);
+                var validationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidIssuer = _configuration["JwtSettings:Issuer"],
+                    ValidAudience = _configuration["JwtSettings:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateLifetime = true
+                };
+
+                var principal = handler.ValidateToken(token, validationParameters, out var validatedToken);
+
+                // Extract user ID from the claims
+                var userIdClaim = principal.FindFirst(ClaimTypes.NameIdentifier);
+
+                if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out var userId))
+                {
+                    throw new UnauthorizedAccessException("Invalid token");
+                }
+
+                // Retrieve the user from the repository
+                var user = await _userRepository.GetByIdAsync(userId);
+                if (user == null)
+                {
+                    throw new KeyNotFoundException("User not found");
+                }
+
+                // Map user to a DTO
+                return new UserDto
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    Role = user.Role
+                };
+            }
+            catch (SecurityTokenExpiredException)
+            {
+                throw new UnauthorizedAccessException("Token has expired");
+            }
+            catch (SecurityTokenValidationException)
+            {
+                throw new UnauthorizedAccessException("Token validation failed");
+            }
+        }
+
 
         private string HashPassword(string password)
         {

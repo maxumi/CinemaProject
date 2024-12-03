@@ -14,22 +14,35 @@
           Movies
         </a>
       </li>
-      <li>
-        <a 
-          routerLink="/profile" 
-          routerLinkActive="font-semibold border-b-2 border-yellow-400"
-          class="text-yellow-400 hover:text-yellow-300 cursor-pointer transition-all">
-          Profile
-        </a>
-      </li>
-      <li>
-        <a 
-          routerLink="/login" 
-          routerLinkActive="font-semibold border-b-2 border-yellow-400"
-          class="text-yellow-400 hover:text-yellow-300 cursor-pointer transition-all">
-          Login
-        </a>
-      </li>
+      @if (isAuthenticated$ | async){
+        <li>
+          <a 
+            routerLink="/profile" 
+            routerLinkActive="font-semibold border-b-2 border-yellow-400"
+            class="text-yellow-400 hover:text-yellow-300 cursor-pointer transition-all">
+            Profile
+          </a>
+        </li>
+      }
+      @if (!(isAuthenticated$ | async)){
+        <li>
+          <a 
+            routerLink="/login" 
+            routerLinkActive="font-semibold border-b-2 border-yellow-400"
+            class="text-yellow-400 hover:text-yellow-300 cursor-pointer transition-all">
+            Login
+          </a>
+        </li>
+      }
+      @if (isAuthenticated$ | async){
+        <li>
+          <a 
+            (click)="logout()"
+            class="text-yellow-400 hover:text-yellow-300 cursor-pointer transition-all">
+            Logout
+          </a>
+        </li>
+      }
     </ul>
   </div>
 </nav>
