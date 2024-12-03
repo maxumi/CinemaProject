@@ -39,6 +39,7 @@ namespace Cinema.API.Controllers
             }
         }
 
+
         [HttpPost]
         public async Task<ActionResult<MovieSessionDto>> CreateMovieSession([FromBody] CreateMovieSessionDto createMovieSessionDto)
         {

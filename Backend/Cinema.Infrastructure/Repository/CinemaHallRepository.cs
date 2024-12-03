@@ -15,6 +15,13 @@ namespace Cinema.Infrastructure.Repository
             _context = context;
         }
 
+        public async Task<IEnumerable<CinemaHall>> GetByIdsAsync(IEnumerable<int> ids)
+        {
+            return await _context.CinemaHalls
+                .Where(ch => ids.Contains(ch.Id))
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<CinemaHall>> GetAllAsync()
         {
             return await _context.CinemaHalls

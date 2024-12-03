@@ -15,6 +15,16 @@ namespace Cinema.Infrastructure.Repository
             _context = context;
         }
 
+        public async Task<IEnumerable<MovieSession>> GetLimitedAsync(int limit)
+        {
+            return await _context.MovieSessions
+                .Include(ms => ms.Movie)
+                .Include(ms => ms.CinemaHall)
+                .OrderBy(ms => ms.StartTime)
+                .Take(limit)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<MovieSession>> GetAllAsync()
         {
             return await _context.MovieSessions

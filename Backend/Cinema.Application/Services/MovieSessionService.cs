@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Cinema.Application.DTOs.CinemaHall;
 using Cinema.Application.DTOs.MovieSession;
 using Cinema.Domain.Entities;
 using Cinema.Infrastructure.Repository;

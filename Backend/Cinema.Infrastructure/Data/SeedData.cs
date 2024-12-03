@@ -13,7 +13,9 @@ namespace Cinema.Infrastructure.Data
             // Seeding CinemaHall
             modelBuilder.Entity<CinemaHall>().HasData(
                 new CinemaHall { Id = 1, Name = "Hall A", Capacity = 150 },
-                new CinemaHall { Id = 2, Name = "Hall B", Capacity = 100 }
+                new CinemaHall { Id = 2, Name = "Hall B", Capacity = 100 },
+                new CinemaHall { Id = 3, Name = "Hall C", Capacity = 150 },
+                new CinemaHall { Id = 4, Name = "Hall D", Capacity = 100 }
             );
 
             // Seeding Seats
@@ -36,25 +38,51 @@ namespace Cinema.Infrastructure.Data
                 new Movie
                 {
                     Id = 1,
-                    Title = "The Action Hero",
-                    DurationMinutes = 120,
-                    ReleaseDate = new DateTime(2023, 6, 15),
-                    Description = "An action-packed thriller about a hero saving the day."
+                    Title = "Epic Adventure",
+                    DurationMinutes = 130,
+                    ReleaseDate = new DateTime(2024, 1, 15),
+                    Description = "A thrilling journey through uncharted lands."
                 },
                 new Movie
                 {
                     Id = 2,
                     Title = "Comedy Nights",
-                    DurationMinutes = 90,
-                    ReleaseDate = new DateTime(2023, 8, 10),
-                    Description = "A hilarious comedy to keep you entertained."
+                    DurationMinutes = 95,
+                    ReleaseDate = new DateTime(2023, 10, 1),
+                    Description = "A rib-tickling comedy that'll leave you in splits."
+                },
+                new Movie
+                {
+                    Id = 3,
+                    Title = "Sci-Fi Wonders",
+                    DurationMinutes = 120,
+                    ReleaseDate = new DateTime(2024, 5, 20),
+                    Description = "Explore the wonders of the universe."
+                },
+                new Movie
+                {
+                    Id = 4,
+                    Title = "Historical Drama",
+                    DurationMinutes = 145,
+                    ReleaseDate = new DateTime(2023, 8, 25),
+                    Description = "A moving story set in ancient times."
+                },
+                new Movie
+                {
+                    Id = 5,
+                    Title = "Mystery Unfolded",
+                    DurationMinutes = 110,
+                    ReleaseDate = new DateTime(2023, 12, 10),
+                    Description = "A detective unravels a mind-bending mystery."
+                },
+                new Movie
+                {
+                    Id = 6,
+                    Title = "Romantic Bliss",
+                    DurationMinutes = 105,
+                    ReleaseDate = new DateTime(2024, 2, 14),
+                    Description = "A heartwarming tale of love and destiny."
                 }
-            );
-
-            // Mapping Genres to Movies
-            modelBuilder.Entity("MovieGenre").HasData(
-                new { MovieId = 1, GenreId = 1 }, // The Action Hero -> Action
-                new { MovieId = 2, GenreId = 2 }  // Comedy Nights -> Comedy
             );
 
             // Seeding MovieSessions
@@ -63,19 +91,82 @@ namespace Cinema.Infrastructure.Data
                 {
                     Id = 1,
                     MovieId = 1,
-                    CinemaHallId = 1,
-                    StartTime = new DateTime(2024, 12, 1, 18, 0, 0),
-                    EndTime = new DateTime(2024, 12, 1, 20, 0, 0),
-                    Price = 12.50m
+                    CinemaHallId = 1, // Ensure this matches CinemaHall data
+                    StartTime = new DateTime(2024, 12, 1, 10, 0, 0),
+                    EndTime = new DateTime(2024, 12, 1, 12, 30, 0),
+                    Price = 15.00m
                 },
                 new MovieSession
                 {
                     Id = 2,
-                    MovieId = 2,
+                    MovieId = 1,
                     CinemaHallId = 2,
-                    StartTime = new DateTime(2024, 12, 2, 15, 0, 0),
-                    EndTime = new DateTime(2024, 12, 2, 16, 30, 0),
-                    Price = 10.00m
+                    StartTime = new DateTime(2024, 12, 1, 14, 0, 0),
+                    EndTime = new DateTime(2024, 12, 1, 16, 30, 0),
+                    Price = 15.00m
+                },
+                new MovieSession
+                {
+                    Id = 3,
+                    MovieId = 1,
+                    CinemaHallId = 3,
+                    StartTime = new DateTime(2024, 12, 1, 18, 0, 0),
+                    EndTime = new DateTime(2024, 12, 1, 20, 30, 0),
+                    Price = 15.00m
+                },
+                new MovieSession
+                {
+                    Id = 4,
+                    MovieId = 1,
+                    CinemaHallId = 4,
+                    StartTime = new DateTime(2024, 12, 1, 21, 0, 0),
+                    EndTime = new DateTime(2024, 12, 1, 23, 30, 0),
+                    Price = 15.00m
+                },
+                new MovieSession
+                {
+                    Id = 5,
+                    MovieId = 2,
+                    CinemaHallId = 1,
+                    StartTime = new DateTime(2024, 12, 2, 10, 0, 0),
+                    EndTime = new DateTime(2024, 12, 2, 11, 35, 0),
+                    Price = 12.00m
+                },
+                new MovieSession
+                {
+                    Id = 6,
+                    MovieId = 3,
+                    CinemaHallId = 2,
+                    StartTime = new DateTime(2024, 12, 3, 12, 0, 0),
+                    EndTime = new DateTime(2024, 12, 3, 14, 0, 0),
+                    Price = 14.00m
+                },
+                new MovieSession
+                {
+                    Id = 7,
+                    MovieId = 4,
+                    CinemaHallId = 3,
+                    StartTime = new DateTime(2024, 12, 4, 15, 0, 0),
+                    EndTime = new DateTime(2024, 12, 4, 17, 25, 0),
+                    Price = 16.00m
+                },
+                new MovieSession
+                {
+                    Id = 8,
+                    MovieId = 5,
+                    CinemaHallId = 4,
+                    StartTime = new DateTime(2024, 12, 5, 18, 0, 0),
+                    EndTime = new DateTime(2024, 12, 5, 19, 50, 0),
+                    Price = 13.00m
+                },
+                new MovieSession
+                {
+                    Id = 9,
+                    MovieId = 6,
+                    CinemaHallId = 1,
+                    StartTime = new DateTime(2024, 12, 6, 20, 0, 0),
+                    EndTime = new DateTime(2024, 12, 6, 21, 45, 0),
+                    Price = 11.00m
                 }
             );
 

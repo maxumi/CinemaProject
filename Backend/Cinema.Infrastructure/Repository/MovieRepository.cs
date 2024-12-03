@@ -16,6 +16,15 @@ namespace Cinema.Infrastructure.Repository
             _context = context;
         }
 
+        public async Task<IEnumerable<Movie>> GetLimitedAsync(int limit)
+        {
+            return await _context.Movies
+                .Include(m => m.Genres)
+                .OrderBy(m => m.ReleaseDate)
+                .Take(limit)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<Movie>> GetAllAsync()
         {
             return await _context.Movies

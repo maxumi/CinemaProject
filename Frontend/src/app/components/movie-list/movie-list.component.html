@@ -1,7 +1,7 @@
 <div class="movie-list max-w-7xl mx-auto p-5 font-sans">
   <h2 class="text-3xl font-bold text-center text-yellow-400 uppercase mb-5">Movies</h2>
   <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    <li *ngFor="let movie of paginatedMovies" class="movie-card">
+    <li *ngFor="let movie of movies" class="movie-card">
       <div class="movie-header">
         <h3 class="movie-title">{{ movie.title }}</h3>
         <div class="movie-details">
@@ -24,26 +24,33 @@
       <div class="movie-sessions">
         <div class="session-header">Showings</div>
         <div class="session-list">
-          <div *ngFor="let session of getSessionsForMovie(movie.id)" class="session-item">
-            <div>{{ session.startTime | date: 'shortTime' }}</div>
-            <div>Hall: {{ session.cinemaHall?.name }}</div>
+          <div *ngFor="let sessionData of getSessionsForMovie(movie.id)" class="session-item">
+            <div>{{ sessionData.session.startTime | date: 'shortTime' }}</div>
+            <div>Hall: {{ sessionData.hall?.name || 'Unknown Hall' }}</div>
           </div>
+          <button
+            *ngIf="hasMoreSessions"
+            (click)="viewMoreSessionsForMovie(movie.id)"
+            class="mt-2 text-blue-500 hover:text-blue-700"
+          >
+            View More Sessions
+          </button>
         </div>
       </div>
     </li>
   </ul>
   <div class="pagination flex justify-center items-center gap-4 mt-6">
     <button
-      (click)="goToPreviousPage()"
-      [disabled]="currentPage === 1"
+      (click)="goToPreviousMoviesPage()"
+      [disabled]="moviesPage === 1"
       class="bg-gradient-to-br from-red-800 to-red-600 text-yellow-400 rounded-md py-2 px-4 font-bold transition hover:bg-yellow-400 hover:text-red-800 disabled:bg-gray-600 disabled:text-gray-300 disabled:cursor-not-allowed"
     >
       Previous
     </button>
-    <span class="text-lg text-yellow-400">Page {{ currentPage }} of {{ totalPages }}</span>
+    <span class="text-lg text-yellow-400">Page {{ moviesPage }}</span>
     <button
-      (click)="goToNextPage()"
-      [disabled]="currentPage === totalPages"
+      (click)="goToNextMoviesPage()"
+      [disabled]="!hasMoreMovies"
       class="bg-gradient-to-br from-red-800 to-red-600 text-yellow-400 rounded-md py-2 px-4 font-bold transition hover:bg-yellow-400 hover:text-red-800 disabled:bg-gray-600 disabled:text-gray-300 disabled:cursor-not-allowed"
     >
       Next

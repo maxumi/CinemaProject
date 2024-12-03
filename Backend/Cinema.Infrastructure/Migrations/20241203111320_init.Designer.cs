@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cinema.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241203090102_init")]
+    [Migration("20241203111320_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -122,6 +122,18 @@ namespace Cinema.Infrastructure.Migrations
                             Id = 2,
                             Capacity = 100,
                             Name = "Hall B"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Capacity = 150,
+                            Name = "Hall C"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Capacity = 100,
+                            Name = "Hall D"
                         });
                 });
 
@@ -265,18 +277,50 @@ namespace Cinema.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            Description = "An action-packed thriller about a hero saving the day.",
-                            DurationMinutes = 120,
-                            ReleaseDate = new DateTime(2023, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "The Action Hero"
+                            Description = "A thrilling journey through uncharted lands.",
+                            DurationMinutes = 130,
+                            ReleaseDate = new DateTime(2024, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "Epic Adventure"
                         },
                         new
                         {
                             Id = 2,
-                            Description = "A hilarious comedy to keep you entertained.",
-                            DurationMinutes = 90,
-                            ReleaseDate = new DateTime(2023, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "A rib-tickling comedy that'll leave you in splits.",
+                            DurationMinutes = 95,
+                            ReleaseDate = new DateTime(2023, 10, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Title = "Comedy Nights"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Explore the wonders of the universe.",
+                            DurationMinutes = 120,
+                            ReleaseDate = new DateTime(2024, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "Sci-Fi Wonders"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "A moving story set in ancient times.",
+                            DurationMinutes = 145,
+                            ReleaseDate = new DateTime(2023, 8, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "Historical Drama"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "A detective unravels a mind-bending mystery.",
+                            DurationMinutes = 110,
+                            ReleaseDate = new DateTime(2023, 12, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "Mystery Unfolded"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Description = "A heartwarming tale of love and destiny.",
+                            DurationMinutes = 105,
+                            ReleaseDate = new DateTime(2024, 2, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "Romantic Bliss"
                         });
                 });
 
@@ -316,19 +360,82 @@ namespace Cinema.Infrastructure.Migrations
                         {
                             Id = 1,
                             CinemaHallId = 1,
-                            EndTime = new DateTime(2024, 12, 1, 20, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndTime = new DateTime(2024, 12, 1, 12, 30, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 1,
-                            Price = 12.50m,
-                            StartTime = new DateTime(2024, 12, 1, 18, 0, 0, 0, DateTimeKind.Unspecified)
+                            Price = 15.00m,
+                            StartTime = new DateTime(2024, 12, 1, 10, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 2,
                             CinemaHallId = 2,
-                            EndTime = new DateTime(2024, 12, 2, 16, 30, 0, 0, DateTimeKind.Unspecified),
+                            EndTime = new DateTime(2024, 12, 1, 16, 30, 0, 0, DateTimeKind.Unspecified),
+                            MovieId = 1,
+                            Price = 15.00m,
+                            StartTime = new DateTime(2024, 12, 1, 14, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CinemaHallId = 3,
+                            EndTime = new DateTime(2024, 12, 1, 20, 30, 0, 0, DateTimeKind.Unspecified),
+                            MovieId = 1,
+                            Price = 15.00m,
+                            StartTime = new DateTime(2024, 12, 1, 18, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CinemaHallId = 4,
+                            EndTime = new DateTime(2024, 12, 1, 23, 30, 0, 0, DateTimeKind.Unspecified),
+                            MovieId = 1,
+                            Price = 15.00m,
+                            StartTime = new DateTime(2024, 12, 1, 21, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CinemaHallId = 1,
+                            EndTime = new DateTime(2024, 12, 2, 11, 35, 0, 0, DateTimeKind.Unspecified),
                             MovieId = 2,
-                            Price = 10.00m,
-                            StartTime = new DateTime(2024, 12, 2, 15, 0, 0, 0, DateTimeKind.Unspecified)
+                            Price = 12.00m,
+                            StartTime = new DateTime(2024, 12, 2, 10, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CinemaHallId = 2,
+                            EndTime = new DateTime(2024, 12, 3, 14, 0, 0, 0, DateTimeKind.Unspecified),
+                            MovieId = 3,
+                            Price = 14.00m,
+                            StartTime = new DateTime(2024, 12, 3, 12, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CinemaHallId = 3,
+                            EndTime = new DateTime(2024, 12, 4, 17, 25, 0, 0, DateTimeKind.Unspecified),
+                            MovieId = 4,
+                            Price = 16.00m,
+                            StartTime = new DateTime(2024, 12, 4, 15, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CinemaHallId = 4,
+                            EndTime = new DateTime(2024, 12, 5, 19, 50, 0, 0, DateTimeKind.Unspecified),
+                            MovieId = 5,
+                            Price = 13.00m,
+                            StartTime = new DateTime(2024, 12, 5, 18, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CinemaHallId = 1,
+                            EndTime = new DateTime(2024, 12, 6, 21, 45, 0, 0, DateTimeKind.Unspecified),
+                            MovieId = 6,
+                            Price = 11.00m,
+                            StartTime = new DateTime(2024, 12, 6, 20, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -545,18 +652,6 @@ namespace Cinema.Infrastructure.Migrations
                     b.HasIndex("GenreId");
 
                     b.ToTable("MovieGenre");
-
-                    b.HasData(
-                        new
-                        {
-                            MovieId = 1,
-                            GenreId = 1
-                        },
-                        new
-                        {
-                            MovieId = 2,
-                            GenreId = 2
-                        });
                 });
 
             modelBuilder.Entity("BookingSeat", b =>

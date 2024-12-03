@@ -15,6 +15,21 @@ namespace Cinema.API.Controllers
             _movieService = movieService;
         }
 
+        [HttpGet("FrontPage")]
+        public async Task<IActionResult> GetFrontPage(
+            [FromQuery] int moviesPage = 1,
+            [FromQuery] int moviesAmount = 5,
+            [FromQuery] int sessionsPage = 1,
+            [FromQuery] int sessionsAmount = 10)
+        {
+            if (moviesPage <= 0 || moviesAmount <= 0 || sessionsPage <= 0 || sessionsAmount <= 0)
+                return BadRequest(new { message = "Page and amount values must be greater than 0." });
+
+            var result = await _movieService.GetFrontPageAsync(moviesPage, moviesAmount, sessionsPage, sessionsAmount);
+            return Ok(result);
+        }
+
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies()
         {

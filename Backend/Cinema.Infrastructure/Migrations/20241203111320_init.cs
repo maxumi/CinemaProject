@@ -275,7 +275,9 @@ namespace Cinema.Infrastructure.Migrations
                 values: new object[,]
                 {
                     { 1, 150, "Hall A" },
-                    { 2, 100, "Hall B" }
+                    { 2, 100, "Hall B" },
+                    { 3, 150, "Hall C" },
+                    { 4, 100, "Hall D" }
                 });
 
             migrationBuilder.InsertData(
@@ -303,8 +305,12 @@ namespace Cinema.Infrastructure.Migrations
                 columns: new[] { "Id", "Description", "DurationMinutes", "ReleaseDate", "Title" },
                 values: new object[,]
                 {
-                    { 1, "An action-packed thriller about a hero saving the day.", 120, new DateTime(2023, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "The Action Hero" },
-                    { 2, "A hilarious comedy to keep you entertained.", 90, new DateTime(2023, 8, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Comedy Nights" }
+                    { 1, "A thrilling journey through uncharted lands.", 130, new DateTime(2024, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "Epic Adventure" },
+                    { 2, "A rib-tickling comedy that'll leave you in splits.", 95, new DateTime(2023, 10, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Comedy Nights" },
+                    { 3, "Explore the wonders of the universe.", 120, new DateTime(2024, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "Sci-Fi Wonders" },
+                    { 4, "A moving story set in ancient times.", 145, new DateTime(2023, 8, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "Historical Drama" },
+                    { 5, "A detective unravels a mind-bending mystery.", 110, new DateTime(2023, 12, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Mystery Unfolded" },
+                    { 6, "A heartwarming tale of love and destiny.", 105, new DateTime(2024, 2, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), "Romantic Bliss" }
                 });
 
             migrationBuilder.InsertData(
@@ -318,21 +324,19 @@ namespace Cinema.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "MovieGenre",
-                columns: new[] { "GenreId", "MovieId" },
-                values: new object[,]
-                {
-                    { 1, 1 },
-                    { 2, 2 }
-                });
-
-            migrationBuilder.InsertData(
                 table: "MovieSessions",
                 columns: new[] { "Id", "CinemaHallId", "EndTime", "MovieId", "Price", "StartTime" },
                 values: new object[,]
                 {
-                    { 1, 1, new DateTime(2024, 12, 1, 20, 0, 0, 0, DateTimeKind.Unspecified), 1, 12.50m, new DateTime(2024, 12, 1, 18, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, 2, new DateTime(2024, 12, 2, 16, 30, 0, 0, DateTimeKind.Unspecified), 2, 10.00m, new DateTime(2024, 12, 2, 15, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { 1, 1, new DateTime(2024, 12, 1, 12, 30, 0, 0, DateTimeKind.Unspecified), 1, 15.00m, new DateTime(2024, 12, 1, 10, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, 2, new DateTime(2024, 12, 1, 16, 30, 0, 0, DateTimeKind.Unspecified), 1, 15.00m, new DateTime(2024, 12, 1, 14, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 3, 3, new DateTime(2024, 12, 1, 20, 30, 0, 0, DateTimeKind.Unspecified), 1, 15.00m, new DateTime(2024, 12, 1, 18, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 4, 4, new DateTime(2024, 12, 1, 23, 30, 0, 0, DateTimeKind.Unspecified), 1, 15.00m, new DateTime(2024, 12, 1, 21, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 5, 1, new DateTime(2024, 12, 2, 11, 35, 0, 0, DateTimeKind.Unspecified), 2, 12.00m, new DateTime(2024, 12, 2, 10, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 6, 2, new DateTime(2024, 12, 3, 14, 0, 0, 0, DateTimeKind.Unspecified), 3, 14.00m, new DateTime(2024, 12, 3, 12, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 7, 3, new DateTime(2024, 12, 4, 17, 25, 0, 0, DateTimeKind.Unspecified), 4, 16.00m, new DateTime(2024, 12, 4, 15, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 8, 4, new DateTime(2024, 12, 5, 19, 50, 0, 0, DateTimeKind.Unspecified), 5, 13.00m, new DateTime(2024, 12, 5, 18, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 9, 1, new DateTime(2024, 12, 6, 21, 45, 0, 0, DateTimeKind.Unspecified), 6, 11.00m, new DateTime(2024, 12, 6, 20, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.InsertData(

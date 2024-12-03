@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Cinema.Application.DTOs.CinemaHall;
 using Cinema.Application.DTOs.Movie;
+using Cinema.Application.DTOs.MovieSession;
 using Cinema.Domain.Entities;
 using Cinema.Infrastructure.Repository;
 
@@ -11,13 +13,64 @@ namespace Cinema.Application.Services
     public class MovieService
     {
         private readonly MovieRepository _movieRepository;
+        private readonly MovieSessionRepository _movieSessionRepository;
+        private readonly CinemaHallRepository _cinemaHallRepository;
         private readonly IMapper _mapper;
 
-        public MovieService(MovieRepository movieRepository, IMapper mapper)
+        public MovieService(
+            MovieRepository movieRepository,
+            MovieSessionRepository movieSessionRepository,
+            CinemaHallRepository cinemaHallRepository,
+            IMapper mapper)
         {
             _movieRepository = movieRepository;
+            _movieSessionRepository = movieSessionRepository;
+            _cinemaHallRepository = cinemaHallRepository;
             _mapper = mapper;
         }
+
+        public async Task<object> GetFrontPageAsync(int moviesPage, int moviesAmount, int sessionsPage, int sessionsAmount)
+        {
+            // Fetch paginated movies
+            var allMovies = await _movieRepository.GetAllAsync();
+            var paginatedMovies = allMovies
+                .Skip((moviesPage - 1) * moviesAmount)
+                .Take(moviesAmount)
+                .ToList();
+            var hasMoreMovies = allMovies.Skip(moviesPage * moviesAmount).Any();
+            var movieDtos = _mapper.Map<IEnumerable<MovieDto>>(paginatedMovies);
+
+            // Fetch paginated movie sessions
+            var allSessions = await _movieSessionRepository.GetAllAsync();
+            var paginatedSessions = allSessions
+                .Skip((sessionsPage - 1) * sessionsAmount)
+                .Take(sessionsAmount)
+                .ToList();
+            var hasMoreSessions = allSessions.Skip(sessionsPage * sessionsAmount).Any();
+            var movieSessionDtos = _mapper.Map<IEnumerable<MovieSessionDto>>(paginatedSessions);
+
+            // Fetch relevant cinema halls based on paginated sessions
+            var cinemaHallIds = paginatedSessions.Select(ms => ms.CinemaHallId).Distinct().ToList();
+            var relevantCinemaHalls = await _cinemaHallRepository.GetByIdsAsync(cinemaHallIds);
+            var cinemaHallDtos = _mapper.Map<IEnumerable<CinemaHallDto>>(relevantCinemaHalls);
+
+            // Return paginated results with HasMore flags
+            return new
+            {
+                Movies = new
+                {
+                    Items = movieDtos,
+                    HasMore = hasMoreMovies
+                },
+                MovieSessions = new
+                {
+                    Items = movieSessionDtos,
+                    HasMore = hasMoreSessions
+                },
+                CinemaHalls = cinemaHallDtos
+            };
+        }
+
 
         public async Task<IEnumerable<MovieDto>> GetAllMoviesAsync()
         {
