@@ -1,57 +1,47 @@
 <div class="movie-list max-w-7xl mx-auto p-5 font-sans">
-  <h2 class="text-3xl font-bold text-center text-yellow-400 uppercase mb-5">Movies</h2>
+  <h2 class="text-3xl font-bold text-center text-yellow-300 uppercase mb-5">Movies</h2>
   <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    <li *ngFor="let movie of movies" class="movie-card">
-      <div class="movie-header">
-        <h3 class="movie-title">{{ movie.title }}</h3>
-        <div class="movie-details">
-          <p><strong>Duration:</strong> {{ movie.durationMinutes }} minutes</p>
-          <p><strong>Release Date:</strong> {{ movie.releaseDate | date: 'longDate' }}</p>
-          <p class="movie-description">
+    <li *ngFor="let movie of movies" class="bg-gradient-to-br from-yellow-200 to-yellow-300 rounded-lg p-4 shadow-md transition hover:-translate-y-1 hover:shadow-lg">
+        <h3 class="text-xl text-red-900 font-bold uppercase">{{ movie.title }}</h3>
+        <div>
+          <p class="text-red-900"><strong>Duration:</strong> {{ movie.durationMinutes }} minutes</p>
+          <p class="text-red-900"><strong>Release Date:</strong> {{ movie.releaseDate | date: 'longDate' }}</p>
+          <p class="text-red-900">
             <strong>Description:</strong>
             <span *ngIf="!isExpanded(movie.id)">{{ movie.description | slice: 0:100 }}...</span>
             <span *ngIf="isExpanded(movie.id)">{{ movie.description }}</span>
-            <a
-              href="javascript:void(0)"
-              (click)="toggleDescription(movie.id)"
-              class="description-toggle"
-            >
+            <a href="javascript:void(0)" (click)="toggleDescription(movie.id)" class="underline font-bold text-red-900">
               {{ isExpanded(movie.id) ? 'Show Less' : 'Read More' }}
             </a>
           </p>
         </div>
-      </div>
-      <div class="movie-sessions">
-        <div class="session-header">Showings</div>
-        <div class="session-list">
-          <div *ngFor="let sessionData of getSessionsForMovie(movie.id)" class="session-item">
+      <div class="border-t-2 border-red-900 pt-2 space-y-2">
+        <div class="text-lg font-bold text-red-900">Showings</div>
+        <div class="flex flex-col gap-2 items-center">
+          <div *ngFor="let sessionData of getSessionsForMovie(movie.id)" class="bg-gradient-to-br from-red-900 to-red-700 text-yellow-300 rounded-md px-3 py-2 text-center text-sm font-bold w-3/4 hover:bg-yellow-400 hover:text-gray-300 cursor-pointer">
             <div>{{ sessionData.session.startTime | date: 'shortTime' }}</div>
             <div>Hall: {{ sessionData.hall?.name || 'Unknown Hall' }}</div>
           </div>
-          <button
-            *ngIf="hasMoreSessions"
-            (click)="viewMoreSessionsForMovie(movie.id)"
-            class="mt-2 text-blue-500 hover:text-blue-700"
-          >
+          <button *ngIf="hasMoreSessions" (click)="viewMoreSessionsForMovie(movie.id)" class="text-blue-500 hover:text-blue-700">
             View More Sessions
           </button>
         </div>
       </div>
     </li>
   </ul>
-  <div class="pagination flex justify-center items-center gap-4 mt-6">
+  <div class="flex justify-center items-center gap-4 mt-6">
     <button
       (click)="goToPreviousMoviesPage()"
       [disabled]="moviesPage === 1"
-      class="bg-gradient-to-br from-red-800 to-red-600 text-yellow-400 rounded-md py-2 px-4 font-bold transition hover:bg-yellow-400 hover:text-red-800 disabled:bg-gray-600 disabled:text-gray-300 disabled:cursor-not-allowed"
+      class="bg-gradient-to-br from-red-800 to-red-600 text-yellow-400 rounded-md py-2 px-4 font-bold hover:bg-yellow-400 hover:text-red-800 disabled:bg-gray-600 disabled:text-gray-300 disabled:cursor-not-allowed"
     >
       Previous
     </button>
-    <span class="text-lg text-yellow-400">Page {{ moviesPage }}</span>
+    <span class="text-lg">Page {{ moviesPage }}</span>
     <button
       (click)="goToNextMoviesPage()"
       [disabled]="!hasMoreMovies"
-      class="bg-gradient-to-br from-red-800 to-red-600 text-yellow-400 rounded-md py-2 px-4 font-bold transition hover:bg-yellow-400 hover:text-red-800 disabled:bg-gray-600 disabled:text-gray-300 disabled:cursor-not-allowed"
+      class="bg-gradient-to-br from-red-800 to-red-600 text-yellow-400 rounded-md py-2 px-4 font-bold hover:bg-yellow-400 hover:text-red-800 disabled:bg-gray-600 disabled:text-gray-300 disabled:cursor-not-allowed"
     >
       Next
     </button>

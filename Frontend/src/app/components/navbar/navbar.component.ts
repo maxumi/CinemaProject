@@ -15,26 +15,23 @@ export class NavbarComponent {
 
   constructor(private authService: AuthService) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.isAuthenticated$ = this.authService.isLoggedIn$;
     this.verifyAuthStatus()
   }
 
-  verifyAuthStatus(): void {
+  verifyAuthStatus() {
     this.authService.checkLoginStatus().subscribe({
       next: (response) => {
-        console.log('Verification successful:', response.message);
       },
       error: (error) => {
-        console.error('Verification failed:', error);
       },
     });
   }
 
-  logout(): void {
+  logout() {
     this.authService.logout().subscribe({
       next: () => {
-        console.log('Successfully logged out');
       },
       error: (error) => {
         console.error('Error during logout:', error);

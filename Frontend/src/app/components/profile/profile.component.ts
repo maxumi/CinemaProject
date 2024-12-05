@@ -3,7 +3,6 @@ import { UpdateUserDto, User } from '../../models/user.models';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-profile',
@@ -19,19 +18,19 @@ export class ProfileComponent {
   constructor(private userService: UserService, private fb: FormBuilder) {}
 
   ngOnInit(): void {
-
     this.userService.getCurrentUser().subscribe({
       next: (userData) => {
         this.user = userData;
         this.initForm();
       },
       error: (error) => {
-        console.error('Error fetching user data:', error);
+        console.error('Error fetching data:', error);
       }
     });
   }
 
   private initForm(): void {
+    // Creates a reactive form using formbuilder which looks cleaner when coding
     this.profileForm = this.fb.group({
       firstName: [this.user.firstName, Validators.required],
       lastName: [this.user.lastName, Validators.required],

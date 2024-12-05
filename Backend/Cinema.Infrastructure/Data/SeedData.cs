@@ -91,7 +91,7 @@ namespace Cinema.Infrastructure.Data
                 {
                     Id = 1,
                     MovieId = 1,
-                    CinemaHallId = 1, // Ensure this matches CinemaHall data
+                    CinemaHallId = 1,
                     StartTime = new DateTime(2024, 12, 1, 10, 0, 0),
                     EndTime = new DateTime(2024, 12, 1, 12, 30, 0),
                     Price = 15.00m

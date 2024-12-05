@@ -54,7 +54,6 @@ namespace Cinema.Application.Services
             var relevantCinemaHalls = await _cinemaHallRepository.GetByIdsAsync(cinemaHallIds);
             var cinemaHallDtos = _mapper.Map<IEnumerable<CinemaHallDto>>(relevantCinemaHalls);
 
-            // Return paginated results with HasMore flags
             return new
             {
                 Movies = new

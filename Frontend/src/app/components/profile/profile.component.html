@@ -1,13 +1,13 @@
 <div class="container mx-auto mt-8">
-  <h2 class="text-3xl font-semibold mb-6 text-yellow-400">User Profile</h2>
+  <h2 class="text-3xl font-semibold mb-6 text-yellow-300">User Profile</h2>
   <div *ngIf="user" class="bg-gradient-to-r from-red-900 to-red-700 p-6 rounded-lg shadow-lg">
     <div *ngIf="!isEditing">
-      <p class="text-lg text-yellow-400"><strong>First Name:</strong> {{ user.firstName }}</p>
-      <p class="text-lg text-yellow-400"><strong>Last Name:</strong> {{ user.lastName }}</p>
-      <p class="text-lg text-yellow-400"><strong>Email:</strong> {{ user.email }}</p>
+      <p class="text-lg text-yellow-300"><strong>First Name:</strong> {{ user.firstName }}</p>
+      <p class="text-lg text-yellow-300"><strong>Last Name:</strong> {{ user.lastName }}</p>
+      <p class="text-lg text-yellow-300"><strong>Email:</strong> {{ user.email }}</p>
       <button
         (click)="enableEditing()"
-        class="bg-yellow-400 text-red-900 px-6 py-2 mt-4 rounded hover:bg-yellow-500 hover:text-red-900 shadow transition-all"
+        class="bg-yellow-300 text-red-900 px-6 py-2 mt-4 rounded hover:bg-yellow-500 hover:text-red-900 shadow transition-all"
       >
         Edit Profile
       </button>
@@ -15,10 +15,10 @@
 
     <form [formGroup]="profileForm" *ngIf="isEditing" class="mt-6">
       <div class="mb-6">
-        <label class="block text-yellow-400 font-medium mb-2">First Name:</label>
+        <label class="block text-yellow-300 font-medium mb-2">First Name:</label>
         <input
           formControlName="firstName"
-          class="border border-yellow-400 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
+          class="border border-yellow-300 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
         />
         <div
           *ngIf="profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched"
@@ -29,10 +29,10 @@
       </div>
 
       <div class="mb-6">
-        <label class="block text-yellow-400 font-medium mb-2">Last Name:</label>
+        <label class="block text-yellow-300 font-medium mb-2">Last Name:</label>
         <input
           formControlName="lastName"
-          class="border border-yellow-400 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
+          class="border border-yellow-300 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
         />
         <div
           *ngIf="profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched"

@@ -25,17 +25,23 @@ export class RegisterComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
-    // Check if the user is already logged in
+    this.checkLoginStatus();
+  }
+
+  checkLoginStatus(): void {
     this.authService.checkLoginStatus().subscribe({
       next: (response: any) => {
-        this.isLoggedIn = true;
-        this.alreadyLoggedInMessage =
-          'You are already logged in! Redirecting to the home page...';
-
-        // Redirect after a delay of 3 seconds
-        setTimeout(() => {
-          this.router.navigate(['/']);
-        }, 3000);
+        if (response.isValid) {
+          this.isLoggedIn = true;
+          this.alreadyLoggedInMessage =
+            'You are already logged in! Redirecting to the home page...';
+          // Redirect after 3 seconds
+          setTimeout(() => {
+            this.router.navigate(['/']);
+          }, 3000);
+        } else {
+          this.isLoggedIn = false;
+        }
       },
       error: () => {
         this.isLoggedIn = false;

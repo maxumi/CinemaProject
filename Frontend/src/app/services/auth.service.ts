@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { Role } from '../models/user.models';
+import { CreateUserDto, Role } from '../models/user.models';
 
 interface AuthResponse {
   isValid: boolean;
@@ -31,17 +31,22 @@ export class AuthService {
     return throwError(() => new Error(error?.message || 'An error occurred'));
   }
 
-  checkLoginStatus(): Observable<AuthResponse> {
+  checkLoginStatus() {
     return this.http.get<AuthResponse>(`${this.baseUrl}/auth/verify-token`, { withCredentials: true }).pipe(
       tap((response) => this.setAuthState(response.isValid)),
       catchError((error) => {
-        this.setAuthState(false);
+        if (error.status === 401) {
+          // Handle 401 as to not log every time
+          this.setAuthState(false);
+          return of({ isValid: false, message: 'Unauthorized' } as AuthResponse);
+        }
+        // For other errors, handle them normally
         return this.handleError(error);
       })
     );
   }
 
-  login(email: string, password: string): Observable<any> {
+  login(email: string, password: string) {
     const loginPayload = { email, password };
     return this.http.post(`${this.baseUrl}/auth/login`, loginPayload, { withCredentials: true }).pipe(
       tap(() => this.setAuthState(true)),
@@ -49,15 +54,21 @@ export class AuthService {
     );
   }
 
-  logout(): Observable<any> {
+  logout() {
     return this.http.post(`${this.baseUrl}/auth/logout`, {}, { withCredentials: true }).pipe(
       tap(() => this.setAuthState(false)),
       catchError((error) => this.handleError(error))
     );
   }
 
-  register(user: { firstName: string; lastName: string; email: string; password: string; role: Role }): Observable<any> {
-    return this.http.post(`${this.baseUrl}/auth/register`, user).pipe(
+  register(user: CreateUserDto ) {
+    return this.http.post<{ isValid: boolean; message: string }>(
+      `${this.baseUrl}/auth/register`,
+      user
+    ).pipe(
+      tap((response) => {
+        this.setAuthState(response.isValid);
+      }),
       catchError((error) => this.handleError(error))
     );
   }

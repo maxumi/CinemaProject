@@ -4,7 +4,7 @@ export interface Movie {
     durationMinutes: number;
     releaseDate: Date;
     description: string;
-    genres: string[]; // Genre names associated with the movie
+    genres: string[];
   }
   
   export interface CreateMovieDto {
@@ -12,7 +12,7 @@ export interface Movie {
     durationMinutes: number;
     releaseDate: Date;
     description: string;
-    genreIds: number[]; // List of genre IDs
+    genreIds: number[];
   }
   
   export interface UpdateMovieDto {
@@ -20,7 +20,7 @@ export interface Movie {
     durationMinutes: number;
     releaseDate: Date;
     description: string;
-    genreIds: number[]; // List of genre IDs
+    genreIds: number[];
   }
   
   export interface Genre {

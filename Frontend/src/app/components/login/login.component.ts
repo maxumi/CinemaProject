@@ -15,7 +15,7 @@ export class LoginComponent {
   password: string = '';
   errorMessage: string = '';
   successMessage: string = '';
-  countdown: number = 3; // Countdown timer for redirection
+  countdown: number = 3;
   isAlreadyLoggedIn: boolean = false;
 
   private authService = inject(AuthService)
@@ -28,25 +28,30 @@ export class LoginComponent {
   checkLoginStatus() {
     this.authService.checkLoginStatus().subscribe({
       next: (response: any) => {
-        console.log('User is already logged in.');
-        this.successMessage = 'You are already logged in!';
-        this.isAlreadyLoggedIn = true;
-
-        // Start the countdown and redirect after 3 seconds
-        const interval = setInterval(() => {
-          if (this.countdown > 0) {
-            this.countdown--;
-          } else {
-            clearInterval(interval);
-            this.router.navigate(['/']);
-          }
-        }, 1000);
+        if (response.isValid) {
+          this.successMessage = 'You are already logged in!';
+          this.isAlreadyLoggedIn = true;
+  
+          // Start the countdown and redirect after 3 seconds
+          const interval = setInterval(() => {
+            if (this.countdown > 0) {
+              this.countdown--;
+            } else {
+              clearInterval(interval);
+              this.router.navigate(['/']);
+            }
+          }, 1000);
+        } else {
+          this.isAlreadyLoggedIn = false;
+        }
       },
       error: (error: any) => {
-        console.log('User is not logged in or token is invalid.');
+        console.log('Error checking login status:', error);
+        this.isAlreadyLoggedIn = false;
       }
     });
   }
+  
 
   login() {
     this.authService.login(this.email, this.password).subscribe({

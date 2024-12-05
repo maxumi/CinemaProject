@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './movie-list.component.html',
   styleUrls: ['./movie-list.component.css'],
 })
-export class MovieListComponent implements OnInit {
+export class MovieListComponent {
   movies: Movie[] = [];
   hasMoreMovies = false;
 
@@ -65,7 +65,7 @@ export class MovieListComponent implements OnInit {
     }
   }
 
-  getSessionsForMovie(movieId: number): Array<{ session: MovieSession; hall: CinemaHall | null }> {
+  getSessionsForMovie(movieId: number) {
     return this.movieSessions
       .filter((session) => session.movieId === movieId)
       .map((session) => ({

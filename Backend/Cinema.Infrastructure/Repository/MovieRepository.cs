@@ -38,7 +38,7 @@ namespace Cinema.Infrastructure.Repository
         {
             return await _context.Movies
                 .Include(m => m.Reviews)
-                .Include(m => m.Genres) // Include genres for many-to-many relationship
+                .Include(m => m.Genres)
                 .FirstOrDefaultAsync(m => m.Id == id);
         }
 
