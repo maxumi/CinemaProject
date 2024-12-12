@@ -1,0 +1,81 @@
+<div class="container mx-auto mt-8">
+  <div class="bg-gradient-to-r from-red-900 to-red-700 p-6 rounded-lg shadow-lg">
+    <h3 class="text-xl font-semibold text-yellow-300 mb-4">Movies</h3>
+    <ul class="space-y-2 overflow-auto max-h-48 pr-2 max-w-sm">
+      <li
+        *ngFor="let movie of movieTitles"
+        class="p-2 rounded-lg shadow text-sm cursor-pointer"
+        [ngClass]="{
+          'bg-yellow-300 text-red-900': selectedMovieId === movie.id,
+          'bg-red-800 text-yellow-300': selectedMovieId !== movie.id
+        }"
+        (click)="selectMovie(movie.id)"
+      >
+        {{ movie.title }}
+      </li>
+    </ul>
+
+    <div class="mt-6">
+      <h3 class="text-xl font-semibold text-yellow-300 mb-4">Edit Movie</h3>
+      <form [formGroup]="movieForm" (ngSubmit)="updateMovie()">
+        <div class="mb-4">
+          <label class="block text-yellow-300 font-medium mb-2">Title:</label>
+          <input
+            formControlName="title"
+            class="border border-yellow-300 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-yellow-300 font-medium mb-2">Duration (minutes):</label>
+          <input
+            formControlName="durationMinutes"
+            type="number"
+            class="border border-yellow-300 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-yellow-300 font-medium mb-2">Release Date:</label>
+          <input
+            formControlName="releaseDate"
+            type="date"
+            class="border border-yellow-300 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-yellow-300 font-medium mb-2">Description:</label>
+          <textarea
+            formControlName="description"
+            class="border border-yellow-300 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
+          ></textarea>
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-yellow-300 font-medium mb-2">Genres:</label>
+          <select
+            formControlName="genreIds"
+            multiple
+            class="border border-yellow-300 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
+          >
+          <option
+          *ngFor="let genre of genres"
+          [value]="genre.id"
+          [selected]="movieForm.value.genreIds.includes(genre.id)"
+        >
+          {{ genre.name }}
+        </option>
+          </select>
+        </div>
+
+        <button
+          type="submit"
+          class="bg-yellow-400 text-red-900 px-6 py-2 rounded-lg hover:bg-yellow-500 hover:text-red-900 shadow transition-all"
+        >
+          Save Changes
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,35 @@
+<div class="p-4">
+    <h1 class="text-4xl font-bold">Cinema Control Panel</h1>
+    <div class="flex flex-col sm:flex-row sm:space-x-4 sm:space-y-0 space-y-4">
+        <button class="bg-gradient-to-br from-red-900 to-red-700 text-yellow-300 rounded-md px-3 py-2 hover:bg-yellow-400 hover:text-gray-300" (click)="setSelection(editSelection.Movies)">
+            Movies
+        </button>
+        <button class="bg-gradient-to-br from-red-900 to-red-700 text-yellow-300 rounded-md px-3 py-2 hover:bg-yellow-400 hover:text-gray-300" (click)="setSelection(editSelection.Showings)">
+            Showings
+        </button>
+        <button class="bg-gradient-to-br from-red-900 to-red-700 text-yellow-300 rounded-md px-3 py-2 hover:bg-yellow-400 hover:text-gray-300" (click)="setSelection(editSelection.Bookings)">
+            Bookings
+        </button>
+        <button class="bg-gradient-to-br from-red-900 to-red-700 text-yellow-300 rounded-md px-3 py-2 hover:bg-yellow-400 hover:text-gray-300" (click)="setSelection(editSelection.Halls)">
+            Halls
+        </button>
+    </div>
+
+    @switch (currentSelection) {
+        @case (editSelection.Movies) {
+            <app-admin-movie></app-admin-movie>
+        }
+        @case (editSelection.Showings) {
+            <app-admin-showing></app-admin-showing>
+        }
+        @case (editSelection.Bookings) {
+            <app-admin-booking></app-admin-booking>
+        }
+        @case (editSelection.Halls) {
+            <app-admin-hall></app-admin-hall>
+        }
+        @default {
+            <div>Select an option to edit</div>
+        }
+    }
+</div>

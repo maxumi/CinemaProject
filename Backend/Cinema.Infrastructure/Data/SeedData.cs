@@ -178,7 +178,7 @@ namespace Cinema.Infrastructure.Data
                     FirstName = "John",
                     LastName = "Doe",
                     Email = "john.doe@example.com",
-                    PasswordHash = "hashedpassword1",
+                    PasswordHash = "$2a$11$muZFY1XLH0Ks/ASxO6mg7uU1DyyXuRBNHKhWW/10yY.FJOZ3nRwC.",
                     Role = Role.Customer
                 },
                 new User
@@ -187,7 +187,7 @@ namespace Cinema.Infrastructure.Data
                     FirstName = "Jane",
                     LastName = "Smith",
                     Email = "jane.smith@example.com",
-                    PasswordHash = "hashedpassword2",
+                    PasswordHash = "$2a$11$muZFY1XLH0Ks/ASxO6mg7uU1DyyXuRBNHKhWW/10yY.FJOZ3nRwC.",
                     Role = Role.Administrator
                 },
                 new User
@@ -196,7 +196,7 @@ namespace Cinema.Infrastructure.Data
                     FirstName = "Alice",
                     LastName = "Brown",
                     Email = "alice.brown@example.com",
-                    PasswordHash = "hashedpassword3",
+                    PasswordHash = "$2a$11$muZFY1XLH0Ks/ASxO6mg7uU1DyyXuRBNHKhWW/10yY.FJOZ3nRwC.",
                     Role = Role.Customer
                 }
             );

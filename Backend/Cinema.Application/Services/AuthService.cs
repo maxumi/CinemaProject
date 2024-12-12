@@ -31,23 +31,19 @@ namespace Cinema.Application.Services
                 return null; // Invalid credentials
             }
 
-            // Generate JWT token
             return GenerateJwtToken(user);
         }
 
         public async Task<bool> RegisterAsync(User user, string password)
         {
-            // Check if user with the same email already exists
             var existingUser = await _userRepository.GetByEmailAsync(user.Email);
             if (existingUser != null)
             {
-                return false; // Email already exists
+                return false;
             }
 
-            // Hash the password
             user.PasswordHash = HashPassword(password);
 
-            // Save the user to the database
             await _userRepository.AddAsync(user);
 
             return true;
@@ -109,14 +105,12 @@ namespace Cinema.Application.Services
                     throw new UnauthorizedAccessException("Invalid token");
                 }
 
-                // Retrieve the user from the repository
                 var user = await _userRepository.GetByIdAsync(userId);
                 if (user == null)
                 {
                     throw new KeyNotFoundException("User not found");
                 }
 
-                // Map user to a DTO
                 return new UserDto
                 {
                     Id = user.Id,

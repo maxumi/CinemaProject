@@ -318,9 +318,9 @@ namespace Cinema.Infrastructure.Migrations
                 columns: new[] { "Id", "Email", "FirstName", "LastName", "PasswordHash", "Role" },
                 values: new object[,]
                 {
-                    { 1, "john.doe@example.com", "John", "Doe", "hashedpassword1", 0 },
-                    { 2, "jane.smith@example.com", "Jane", "Smith", "hashedpassword2", 1 },
-                    { 3, "alice.brown@example.com", "Alice", "Brown", "hashedpassword3", 0 }
+                    { 1, "john.doe@example.com", "John", "Doe", "$2a$11$JTCywpQ32wbqj41LAOL3u.hCYrpGPtWF9WML4A.lMWpmPZCKFSS..", 0 },
+                    { 2, "jane.smith@example.com", "Jane", "Smith", "$2a$11$JTCywpQ32wbqj41LAOL3u.hCYrpGPtWF9WML4A.lMWpmPZCKFSS..", 1 },
+                    { 3, "alice.brown@example.com", "Alice", "Brown", "$2a$11$JTCywpQ32wbqj41LAOL3u.hCYrpGPtWF9WML4A.lMWpmPZCKFSS..", 0 }
                 });
 
             migrationBuilder.InsertData(

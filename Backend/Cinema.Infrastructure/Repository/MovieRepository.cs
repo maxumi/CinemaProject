@@ -34,6 +34,18 @@ namespace Cinema.Infrastructure.Repository
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Movie>> GetMovieTitlesAsync()
+        {
+            return await _context.Movies
+                .AsNoTracking()
+                .Select(m => new Movie
+                {
+                    Id = m.Id,
+                    Title = m.Title
+                })
+                .ToListAsync();
+        }
+
         public async Task<Movie> GetByIdAsync(int id)
         {
             return await _context.Movies

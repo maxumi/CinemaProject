@@ -4,6 +4,8 @@ import { MovieListComponent } from './components/movie-list/movie-list.component
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { AdminComponent } from './components/admin/admin.component';
+import { Role } from './models/user.models';
 
 
 export const routes: Routes = [
@@ -20,5 +22,10 @@ export const routes: Routes = [
         component: LoginComponent
     },
     { path: 'register', component: RegisterComponent },
-    {path: 'profile', component: ProfileComponent}
+    {path: 'profile', component: ProfileComponent},
+    {
+        path: "admin",
+        component: AdminComponent,
+        data: { roles: [Role.Administrator] }
+    }
 ];

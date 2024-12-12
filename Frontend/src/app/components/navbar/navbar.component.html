@@ -14,7 +14,17 @@
           Movies
         </a>
       </li>
-      @if (isAuthenticated$ | async){
+      @if((userRole$ | async) === role.Administrator){
+        <li>
+          <a 
+            routerLink="/admin" 
+            routerLinkActive="font-semibold border-b-2 border-yellow-400"
+            class="text-yellow-400 hover:text-yellow-300 cursor-pointer transition-all">
+            Admin
+          </a>
+        </li>
+      }
+      @if ((userRole$ | async) === role.Customer){
         <li>
           <a 
             routerLink="/profile" 

@@ -613,7 +613,7 @@ namespace Cinema.Infrastructure.Migrations
                             Email = "john.doe@example.com",
                             FirstName = "John",
                             LastName = "Doe",
-                            PasswordHash = "hashedpassword1",
+                            PasswordHash = "$2a$11$muZFY1XLH0Ks/ASxO6mg7uU1DyyXuRBNHKhWW/10yY.FJOZ3nRwC.",
                             Role = 0
                         },
                         new
@@ -622,7 +622,7 @@ namespace Cinema.Infrastructure.Migrations
                             Email = "jane.smith@example.com",
                             FirstName = "Jane",
                             LastName = "Smith",
-                            PasswordHash = "hashedpassword2",
+                            PasswordHash = "$2a$11$muZFY1XLH0Ks/ASxO6mg7uU1DyyXuRBNHKhWW/10yY.FJOZ3nRwC.",
                             Role = 1
                         },
                         new
@@ -631,7 +631,7 @@ namespace Cinema.Infrastructure.Migrations
                             Email = "alice.brown@example.com",
                             FirstName = "Alice",
                             LastName = "Brown",
-                            PasswordHash = "hashedpassword3",
+                            PasswordHash = "$2a$11$muZFY1XLH0Ks/ASxO6mg7uU1DyyXuRBNHKhWW/10yY.FJOZ3nRwC.",
                             Role = 0
                         });
                 });

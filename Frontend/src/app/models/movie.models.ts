@@ -22,6 +22,12 @@ export interface Movie {
     description: string;
     genreIds: number[];
   }
+
+  // Holds titles and id.
+  export interface MovieItem{
+    id: number;
+    title: string;
+  }
   
   export interface Genre {
     id: number;

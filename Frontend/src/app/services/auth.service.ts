@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { CreateUserDto, Role } from '../models/user.models';
+import { TokenServiceService } from './token-service.service';
 
 interface AuthResponse {
   isValid: boolean;
@@ -17,13 +18,24 @@ export class AuthService {
   private baseUrl = environment.apiBaseUrl;
 
   private loggedInSubject = new BehaviorSubject<boolean>(false);
-  
-  isLoggedIn$ = this.loggedInSubject.asObservable();
+  private roleSubject = new BehaviorSubject<Role | null>(null);
 
-  constructor(private http: HttpClient) {}
+  isLoggedIn$ = this.loggedInSubject.asObservable();
+  userRole$ = this.roleSubject.asObservable();
+
+  constructor(private http: HttpClient, private tokenService: TokenServiceService) {}
 
   private setAuthState(isLoggedIn: boolean): void {
     this.loggedInSubject.next(isLoggedIn);
+    if (isLoggedIn) {
+      this.roleSubject.next(this.getRole());
+    } else {
+      this.roleSubject.next(null);
+    }
+  }
+
+  getRole(): Role | null {
+    return this.tokenService.getTokenRole();
   }
 
   private handleError(error: any): Observable<never> {
@@ -36,11 +48,9 @@ export class AuthService {
       tap((response) => this.setAuthState(response.isValid)),
       catchError((error) => {
         if (error.status === 401) {
-          // Handle 401 as to not log every time
           this.setAuthState(false);
           return of({ isValid: false, message: 'Unauthorized' } as AuthResponse);
         }
-        // For other errors, handle them normally
         return this.handleError(error);
       })
     );
@@ -61,14 +71,12 @@ export class AuthService {
     );
   }
 
-  register(user: CreateUserDto ) {
+  register(user: CreateUserDto) {
     return this.http.post<{ isValid: boolean; message: string }>(
       `${this.baseUrl}/auth/register`,
       user
     ).pipe(
-      tap((response) => {
-        this.setAuthState(response.isValid);
-      }),
+      tap((response) => this.setAuthState(response.isValid)),
       catchError((error) => this.handleError(error))
     );
   }

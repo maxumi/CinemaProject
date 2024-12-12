@@ -36,7 +36,7 @@ namespace Cinema.API.Controllers
 
             var cookieOptions = new CookieOptions
             {
-                HttpOnly = true,
+                HttpOnly = false,
                 Secure = true,
                 SameSite = SameSiteMode.None,
                 Expires = DateTime.UtcNow.AddHours(2)
@@ -52,7 +52,7 @@ namespace Cinema.API.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState); // Return validation errors
+                return BadRequest(ModelState);
             }
 
             var user = new User
@@ -120,15 +120,14 @@ namespace Cinema.API.Controllers
         [HttpPost("logout")]
         public IActionResult Logout()
         {
-            // Optionally, invalidate the token on the server-side here (e.g., using a blacklist).
 
             // Explicitly set an expired cookie
             var cookieOptions = new CookieOptions
             {
-                HttpOnly = true,
-                Secure = true, // Use Secure = true in production for HTTPS
+                HttpOnly = false,
+                Secure = true,
                 SameSite = SameSiteMode.None,
-                Expires = DateTime.UtcNow.AddDays(-1) // Expire immediately
+                Expires = DateTime.UtcNow.AddDays(-1) // Expire now
             };
 
             Response.Cookies.Append("jwt", "", cookieOptions);

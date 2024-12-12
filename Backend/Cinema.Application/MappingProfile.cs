@@ -56,6 +56,7 @@ namespace Cinema.Application
                 .ForMember(dest => dest.PasswordHash, opt => opt.Ignore()); // Hash password explicitly
             CreateMap<UpdateUserDto, User>()
                 .ForMember(dest => dest.PasswordHash, opt => opt.Ignore()); // Password should not be updated via this DTO
+            CreateMap<Movie, MovieTitlesDto>().ReverseMap();
         }
     }
 

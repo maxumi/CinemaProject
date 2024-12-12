@@ -29,6 +29,21 @@ namespace Cinema.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("Titles")]
+        public async Task<IActionResult> GetMovieTitles()
+        {
+            try
+            {
+                var movieTitles = await _movieService.GetMovieTitlesAsync();
+                return Ok(movieTitles);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred while fetching for movie titles." });
+            }
+        }
+
+
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies()

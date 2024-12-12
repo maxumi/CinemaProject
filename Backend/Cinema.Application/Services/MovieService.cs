@@ -70,7 +70,11 @@ namespace Cinema.Application.Services
             };
         }
 
-
+        public async Task<IEnumerable<MovieTitlesDto>> GetMovieTitlesAsync()
+        {
+            var movies = await _movieRepository.GetMovieTitlesAsync();
+            return _mapper.Map<IEnumerable<MovieTitlesDto>>(movies);
+        }
         public async Task<IEnumerable<MovieDto>> GetAllMoviesAsync()
         {
             var movies = await _movieRepository.GetAllAsync();
