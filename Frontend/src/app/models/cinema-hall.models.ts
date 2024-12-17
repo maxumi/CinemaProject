@@ -3,4 +3,12 @@ export interface CinemaHall {
     name: string;
     capacity: number;
   }
+  export interface CreateCinemaHallDto {
+    name: string;
+    capacity: number;
+  }
+  export interface UpdateCinemaHallDto {
+    name: string;
+    capacity: number;
+  }
   

@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { AdminMovieComponent } from './admin-movie/admin-movie.component';
-import { AdminShowingComponent } from './admin-showing/admin-showing.component';
 import { AdminHallComponent } from './admin-hall/admin-hall.component';
 import { AdminBookingComponent } from './admin-booking/admin-booking.component';
+import { AdminMovieSessionComponent } from './admin-movie-session/admin-movie-session.component';
 
 
 enum EditSelection {
@@ -15,7 +15,7 @@ enum EditSelection {
 
 @Component({
   selector: 'app-admin',
-  imports: [CommonModule, AdminMovieComponent, AdminShowingComponent, AdminHallComponent, AdminBookingComponent],
+  imports: [CommonModule, AdminMovieComponent, AdminMovieSessionComponent, AdminHallComponent, AdminBookingComponent],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
 })

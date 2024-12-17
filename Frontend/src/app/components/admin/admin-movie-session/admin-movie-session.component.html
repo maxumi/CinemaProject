@@ -1,0 +1,102 @@
+<div class="container mx-auto mt-8">
+  <div class="bg-gradient-to-r from-red-900 to-red-700 p-6 rounded-lg shadow-lg">
+    <h3 class="text-xl font-semibold text-yellow-300 mb-4">Movie Sessions</h3>
+    <ul class="space-y-2 overflow-auto max-h-48 pr-2 max-w-sm">
+      <li
+        *ngFor="let session of sessions"
+        class="p-2 rounded-lg shadow text-sm cursor-pointer"
+        [ngClass]="{
+          'bg-yellow-300 text-red-900': selectedSessionId === session.id,
+          'bg-red-800 text-yellow-300': selectedSessionId !== session.id
+        }"
+        (click)="selectSession(session.id)"
+      >
+        Session #{{ session.id }} - MovieID: {{ session.movieId }} - Hall: {{ session.cinemaHallId }} - Start: {{ session.startTime }} - End: {{ session.endTime }} - Price: {{ session.price }}
+      </li>
+    </ul>
+
+    <div class="mt-6 flex space-x-4">
+      <button
+        (click)="newSession()"
+        class="bg-yellow-400 text-red-900 px-6 py-2 rounded-lg hover:bg-yellow-500 hover:text-red-900 shadow transition-all"
+      >
+        New Session
+      </button>
+      <button
+        *ngIf="selectedSessionId"
+        (click)="deleteSession(selectedSessionId)"
+        class="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 shadow transition-all"
+      >
+        Delete Selected Session
+      </button>
+    </div>
+
+    <div class="mt-6">
+      <h3 class="text-xl font-semibold text-yellow-300 mb-4">
+        {{ selectedSessionId ? 'Edit Session' : 'Create Session' }}
+      </h3>
+      <form [formGroup]="sessionForm" (ngSubmit)="saveSession()">
+        <div class="mb-4">
+          <label class="block text-yellow-300 font-medium mb-2">Movie:</label>
+          <select
+            formControlName="movieId"
+            class="border border-yellow-300 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
+          >
+            <option [ngValue]="null">Select a movie</option>
+            <option *ngFor="let movie of movies" [value]="movie.id">
+              {{ movie.title }}
+            </option>
+          </select>
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-yellow-300 font-medium mb-2">Cinema Hall:</label>
+          <select
+            formControlName="cinemaHallId"
+            class="border border-yellow-300 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
+          >
+            <option [ngValue]="null">Select a hall</option>
+            <option *ngFor="let hall of cinemaHalls" [value]="hall.id">
+              {{ hall.name }}
+            </option>
+          </select>
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-yellow-300 font-medium mb-2">Start Time:</label>
+          <input
+            formControlName="startTime"
+            type="datetime-local"
+            class="border border-yellow-300 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-yellow-300 font-medium mb-2">End Time:</label>
+          <input
+            formControlName="endTime"
+            type="datetime-local"
+            class="border border-yellow-300 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-yellow-300 font-medium mb-2">Price:</label>
+          <input
+            formControlName="price"
+            type="number"
+            step="0.01"
+            class="border border-yellow-300 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="bg-yellow-400 text-red-900 px-6 py-2 rounded-lg hover:bg-yellow-500 hover:text-red-900 shadow transition-all"
+        >
+          {{ selectedSessionId ? 'Save Changes' : 'Add Session' }}
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

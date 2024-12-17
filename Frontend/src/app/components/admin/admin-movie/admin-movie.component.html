@@ -15,9 +15,26 @@
       </li>
     </ul>
 
+    <div class="mt-6 flex space-x-4">
+      <button
+        (click)="newMovie()"
+        class="bg-yellow-400 text-red-900 px-6 py-2 rounded-lg hover:bg-yellow-500 hover:text-red-900 shadow transition-all"
+      >
+        New Movie
+      </button>
+      <!-- Delete button only shown if a movie is selected -->
+      <button
+        *ngIf="selectedMovieId"
+        (click)="deleteMovie()"
+        class="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 shadow transition-all"
+      >
+        Delete Selected Movie
+      </button>
+    </div>
+
     <div class="mt-6">
-      <h3 class="text-xl font-semibold text-yellow-300 mb-4">Edit Movie</h3>
-      <form [formGroup]="movieForm" (ngSubmit)="updateMovie()">
+      <h3 class="text-xl font-semibold text-yellow-300 mb-4">{{ selectedMovieId ? 'Edit Movie' : 'Create Movie' }}</h3>
+      <form [formGroup]="movieForm" (ngSubmit)="saveMovie()">
         <div class="mb-4">
           <label class="block text-yellow-300 font-medium mb-2">Title:</label>
           <input
@@ -59,13 +76,13 @@
             multiple
             class="border border-yellow-300 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
           >
-          <option
-          *ngFor="let genre of genres"
-          [value]="genre.id"
-          [selected]="movieForm.value.genreIds.includes(genre.id)"
-        >
-          {{ genre.name }}
-        </option>
+            <option
+              *ngFor="let genre of genres"
+              [value]="genre.id"
+              [selected]="movieForm.value.genreIds.includes(genre.id)"
+            >
+              {{ genre.name }}
+            </option>
           </select>
         </div>
 
@@ -73,7 +90,7 @@
           type="submit"
           class="bg-yellow-400 text-red-900 px-6 py-2 rounded-lg hover:bg-yellow-500 hover:text-red-900 shadow transition-all"
         >
-          Save Changes
+          {{ selectedMovieId ? 'Save Changes' : 'Add Movie' }}
         </button>
       </form>
     </div>
