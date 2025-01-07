@@ -16,6 +16,22 @@ namespace Cinema.Infrastructure.Repository
             _context = context;
         }
 
+        public async Task<IEnumerable<User>> SearchUsersByNameAsync(string query, int pageNumber, int pageSize)
+        {
+            query = query.ToLower();
+            return await _context.Users
+                .AsNoTracking()
+                .Where(u => EF.Functions.Like(u.FirstName.ToLower(), $"%{query}%") ||
+                            EF.Functions.Like(u.LastName.ToLower(), $"%{query}%") ||
+                            EF.Functions.Like((u.FirstName + " " + u.LastName).ToLower(), $"%{query}%"))
+                .OrderBy(u => u.FirstName) // Optional: Order by first name
+                .Skip((pageNumber - 1) * pageSize) // Skip previous pages
+                .Take(pageSize) // Take current page size
+                .ToListAsync();
+        }
+
+
+
         public async Task<IEnumerable<User>> GetAllAsync()
         {
             return await _context.Users.AsNoTracking().ToListAsync();

@@ -25,6 +25,32 @@ namespace Cinema.API.Controllers
             _configuration = configuration;
         }
 
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<UserItem>>> SearchUsers(
+            [FromQuery] string query,
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10)
+        {
+            if (pageNumber <= 0 || pageSize <= 0)
+            {
+                return BadRequest(new { message = "Page number and page size must be greater than 0." });
+            }
+
+            try
+            {
+                var users = await _userService.SearchUsersAsync(query, pageNumber, pageSize);
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while searching for users.", details = ex.Message });
+            }
+        }
+
+
+
+
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
         {

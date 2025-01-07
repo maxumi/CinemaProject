@@ -27,3 +27,7 @@ export interface User {
     role: Role;
   }
   
+  export interface UserItem {
+    id: number,
+    fullName: string
+  }

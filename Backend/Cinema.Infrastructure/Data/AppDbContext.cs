@@ -9,16 +9,16 @@ namespace Cinema.Infrastructure.Data
         {
         }
 
-        public DbSet<User> Users { get; set; }
-        public DbSet<Movie> Movies { get; set; }
-        public DbSet<Genre> Genres { get; set; }
-        public DbSet<MovieSession> MovieSessions { get; set; }
-        public DbSet<CinemaHall> CinemaHalls { get; set; }
-        public DbSet<Booking> Bookings { get; set; }
-        public DbSet<Seat> Seats { get; set; }
-        public DbSet<PaymentDetail> PaymentDetails { get; set; }
-        public DbSet<Review> Reviews { get; set; }
-        public DbSet<Discount> Discounts { get; set; }
+        public required DbSet<User> Users { get; set; }
+        public required DbSet<Movie> Movies { get; set; }
+        public required DbSet<Genre> Genres { get; set; }
+        public required DbSet<MovieSession> MovieSessions { get; set; }
+        public required DbSet<CinemaHall> CinemaHalls { get; set; }
+        public required DbSet<Booking> Bookings { get; set; }
+        public required DbSet<Seat> Seats { get; set; }
+        public required DbSet<PaymentDetail> PaymentDetails { get; set; }
+        public required DbSet<Review> Reviews { get; set; }
+        public required DbSet<Discount> Discounts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,7 +37,7 @@ namespace Cinema.Infrastructure.Data
                     j => j.HasOne<Movie>()
                           .WithMany()
                           .HasForeignKey("MovieId")
-                          .OnDelete(DeleteBehavior.Restrict),
+                          .OnDelete(DeleteBehavior.Cascade),
                     j => j.HasKey("MovieId", "GenreId") // Define composite key
                 );
 
@@ -55,7 +55,7 @@ namespace Cinema.Infrastructure.Data
                     s => s.HasOne<Booking>()
                           .WithMany()
                           .HasForeignKey("BookingId")
-                          .OnDelete(DeleteBehavior.Restrict) // Prevent cascading delete on Reservations
+                          .OnDelete(DeleteBehavior.Cascade) // Prevent cascading delete on Reservations
                 );
 
 

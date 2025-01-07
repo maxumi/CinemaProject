@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { UpdateUserDto, User } from '../models/user.models';
+import { UpdateUserDto, User, UserItem } from '../models/user.models';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
@@ -15,11 +15,19 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
-  getCurrentUser(): Observable<User> {
+
+  getSelectedUsers(query: string) {
+    return this.http.get<UserItem[]>(`${this.baseUrl}/User/search`, {
+      params: { query },
+      withCredentials: true,
+    });
+  }
+
+  getCurrentUser(){
     return this.http.get<User>(`${this.baseUrl}/User/current-user`, { withCredentials: true });
   }
 
-  updateUser(userData: UpdateUserDto): Observable<User> {
+  updateUser(userData: UpdateUserDto) {
     return this.http.put<User>(`${this.baseUrl}/User/${userData.id}`, userData, { withCredentials: true });
   }
 }

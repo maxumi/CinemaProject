@@ -16,7 +16,7 @@ import { CinemaHallService } from '../../../services/cinema-hall.service';
   templateUrl: './admin-movie-session.component.html',
   styleUrls: ['./admin-movie-session.component.css']
 })
-export class AdminMovieSessionComponent implements OnInit {
+export class AdminMovieSessionComponent {
   sessionForm: FormGroup;
   sessions: MovieSession[] = [];
   selectedSessionId: number | null = null;
