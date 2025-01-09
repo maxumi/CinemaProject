@@ -1,161 +1,150 @@
 <div class="container mx-auto mt-8">
   <div class="bg-gradient-to-r from-red-900 to-red-700 p-6 rounded-lg shadow-lg">
     <h3 class="text-xl font-semibold text-yellow-300 mb-4">Bookings</h3>
-    <!-- Booking List -->
+
+    <!-- Existing Bookings -->
     <ul class="space-y-2 overflow-auto max-h-48 pr-2 max-w-sm">
       <li
-        *ngFor="let booking of bookings"
+        *ngFor="let b of bookings"
         class="p-2 rounded-lg shadow text-sm cursor-pointer"
         [ngClass]="{
-          'bg-yellow-300 text-red-900': selectedBookingId === booking.id,
-          'bg-red-800 text-yellow-300': selectedBookingId !== booking.id
+          'bg-yellow-300 text-red-900': selectedBookingId === b.id,
+          'bg-red-800 text-yellow-300': selectedBookingId !== b.id
         }"
-        (click)="selectBooking(booking.id)"
+        (click)="selectBooking(b.id)"
       >
-        Booking #{{ booking.id }} (User ID: {{ booking.userId }})
+        Booking #{{ b.id }} (User: {{ b.userId }})
       </li>
     </ul>
 
-    <!-- Action Buttons -->
+    <!-- Actions -->
     <div class="mt-6 flex space-x-4">
       <button
         (click)="newBooking()"
-        class="bg-yellow-400 text-red-900 px-6 py-2 rounded-lg hover:bg-yellow-500 hover:text-red-900 shadow transition-all"
+        class="bg-yellow-400 text-red-900 px-6 py-2 rounded-lg hover:bg-yellow-500 shadow"
       >
         New Booking
       </button>
       <button
         *ngIf="selectedBookingId"
         (click)="deleteBooking()"
-        class="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 shadow transition-all"
+        class="bg-red-500 text-white px-6 py-2 rounded-lg hover:bg-red-600 shadow"
       >
-        Delete Selected Booking
+        Delete Booking
       </button>
     </div>
 
+    <!-- Booking Form -->
     <div class="mt-6">
       <h3 class="text-xl font-semibold text-yellow-300 mb-4">
         {{ selectedBookingId ? 'Edit Booking' : 'Create Booking' }}
       </h3>
 
-      <!-- Booking Form -->
       <form [formGroup]="bookingForm" (ngSubmit)="createBooking()">
-
-        <!-- User Search -->
+        <!-- Search for User -->
         <div class="mb-4 relative">
           <label class="block text-yellow-300 font-medium mb-2">Search User:</label>
           <input
+            #SearchByName
             type="text"
-            #searchByFullName
             placeholder="Search by name"
-            (input)="onUserSearch(searchByFullName.value)"
-            class="border border-yellow-300 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
+            (input)="onUserSearch(SearchByName.value)"
+            class="border border-yellow-300 p-3 rounded-lg w-full text-black"
           />
           <ul
-            *ngIf="users.length > 0"
-            class="absolute bg-white shadow-lg border border-yellow-300 rounded-lg mt-1 max-h-40 overflow-auto w-full z-10"
+            *ngIf="users.length"
+            class="absolute bg-white border border-yellow-300 rounded-lg mt-1 max-h-40 overflow-auto w-full z-10"
           >
             <li
-              *ngFor="let user of users"
-              (click)="selectUser(user)"
-              class="cursor-pointer px-3 py-2 hover:bg-yellow-300"
+              *ngFor="let u of users"
+              (click)="selectUser(u)"
+              class="cursor-pointer px-3 py-2 hover:bg-gray-300 text-black"
             >
-              {{ user.fullName }}
+              {{ u.fullName }}
             </li>
           </ul>
         </div>
 
-        <!-- User ID -->
         <div class="mb-4">
-          <label class="block text-yellow-300 font-medium mb-2">User ID:</label>
+          <label class="block text-yellow-300 mb-2">User ID:</label>
           <input
             formControlName="userId"
             type="number"
+            class="border border-yellow-300 p-3 w-full bg-gray-200 text-black"
             readonly
-            class="border border-yellow-300 p-3 rounded-lg w-full bg-gray-200 text-black"
           />
         </div>
 
-        <!-- Number of Tickets -->
         <div class="mb-4">
-          <label class="block text-yellow-300 font-medium mb-2">Number of Tickets:</label>
+          <label class="block text-yellow-300 mb-2">Number of Tickets:</label>
           <input
             formControlName="numberOfTickets"
             type="number"
-            class="border border-yellow-300 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
+            class="border border-yellow-300 p-3 w-full text-black"
+            readonly
           />
         </div>
 
-        <!-- Movie Session Selection -->
         <div class="mb-4">
-          <label class="block text-yellow-300 font-medium mb-2">Movie Session:</label>
+          <label class="block text-yellow-300 mb-2">Movie Session:</label>
           <select
-            #movieSessionId
+            #SelectSession
             formControlName="movieSessionId"
-            class="border border-yellow-300 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
-            (change)="onSessionChange(movieSessionId.value)"
+            class="border border-yellow-300 p-3 w-full text-black"
+            (change)="onSessionChange(SelectSession.value)"
           >
-            <option value="" disabled>Select a session</option>
-            <option *ngFor="let session of movieSessions" [value]="session.id">
-              Movie ID: {{ session.movieId }} —
-              Start: {{ session.startTime | date }} —
-              Price: {{ session.price | currency }}
+            <option value="">Select a session</option>
+            <option *ngFor="let ms of movieSessions" [value]="ms.id">
+              Movie: {{ ms.movieId }} — Start: {{ ms.startTime | date }} — Price: {{ ms.price | currency }}
             </option>
           </select>
         </div>
 
-        <!-- Seat Selection -->
         <div class="mb-4">
-          <label class="block text-yellow-300 font-medium mb-2">Seats:</label>
+          <label class="block text-yellow-300 mb-2">Seats:</label>
           <div class="grid grid-cols-4 gap-2">
             <div
-              *ngFor="let seat of seats"
+              *ngFor="let s of seats"
               class="p-2 bg-yellow-300 text-red-900 rounded-lg cursor-pointer"
-              (click)="toggleSeatSelection(seat.id)"
-              [class.bg-yellow-500]="selectedSeatIds.includes(seat.id)"
+              (click)="toggleSeatSelection(s.id)"
+              [class.bg-yellow-500]="selectedSeatIds.includes(s.id)"
             >
-              {{ seat.seatNumber }}
+              {{ s.seatNumber }}
             </div>
           </div>
         </div>
 
-        <!-- Payment Details (Nested FormGroup) -->
         <div formGroupName="paymentDetail">
           <div class="mb-4">
-            <label class="block text-yellow-300 font-medium mb-2">Payment Amount:</label>
+            <label class="block text-yellow-300 mb-2">Payment Amount:</label>
             <input
               formControlName="amount"
               type="number"
-              class="border border-yellow-300 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
+              class="border border-yellow-300 p-3 w-full text-black"
+              readonly
             />
           </div>
-
           <div class="mb-4">
-            <label class="block text-yellow-300 font-medium mb-2">Payment Method:</label>
-            <select
-              formControlName="method"
-              class="border border-yellow-300 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
-            >
-              <option value="" disabled>Select a method</option>
-              <option [value]="'Online'">Online</option>
-              <option [value]="'OnPremise'">On Premise</option>
+            <label class="block text-yellow-300 mb-2">Payment Method:</label>
+            <select formControlName="method" class="border border-yellow-300 p-3 w-full text-black">
+              <option value="">Select a method</option>
+              <option value="Online">Online</option>
+              <option value="OnPremise">On Premise</option>
             </select>
           </div>
-
           <div class="mb-4">
-            <label class="block text-yellow-300 font-medium mb-2">Payment Date:</label>
+            <label class="block text-yellow-300 mb-2">Payment Date:</label>
             <input
               formControlName="date"
               type="date"
-              class="border border-yellow-300 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
+              class="border border-yellow-300 p-3 w-full text-black"
             />
           </div>
         </div>
 
-        <!-- Submit Button -->
         <button
           type="submit"
-          class="bg-yellow-400 text-red-900 px-6 py-2 rounded-lg hover:bg-yellow-500 hover:text-red-900 shadow transition-all"
+          class="bg-yellow-400 text-red-900 px-6 py-2 rounded-lg hover:bg-yellow-500 shadow"
         >
           {{ selectedBookingId ? 'Save Changes' : 'Add Booking' }}
         </button>

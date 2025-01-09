@@ -12,9 +12,11 @@ namespace Cinema.Infrastructure.Repository
     public class SeatRepository
     {
         private readonly AppDbContext _context;
+        private readonly MovieSessionRepository _sessionRepository;
 
-        public SeatRepository(AppDbContext context) 
+        public SeatRepository(AppDbContext context, MovieSessionRepository movieSessionRepository) 
         {
+            _sessionRepository = movieSessionRepository;
             _context = context;
         }
         public async Task<MovieSession> GetByIdAsync(int id)

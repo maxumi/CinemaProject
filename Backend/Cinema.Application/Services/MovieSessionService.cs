@@ -26,24 +26,27 @@ namespace Cinema.Application.Services
 
         public async Task<IEnumerable<SeatDto>> GetAvailableSeatsAsync(int sessionId)
         {
-            // 1. Retrieve the session including its hall information and/or existing bookings
             var session = await _movieSessionRepository.GetByIdAsync(sessionId);
-            if (session == null) throw new KeyNotFoundException($"Session with ID {sessionId} not found.");
+            if (session == null)
+                throw new KeyNotFoundException($"Session with ID {sessionId} not found.");
 
-            // 2. Pull the cinema hall seats from the repository or session.Hall
             var allSeats = await _seatRepository.GetSeatsByHallIdAsync(session.CinemaHallId);
 
-            // 3. Determine booked seats for the session
             var bookedSeatIds = session.Bookings
                 .SelectMany(b => b.Seats)
                 .Select(s => s.Id)
                 .Distinct()
                 .ToHashSet();
 
-            var availableSeats = allSeats.Where(s => !bookedSeatIds.Contains(s.Id)).ToList();
+            // 4. Filter out booked seats
+            var availableSeats = allSeats
+                .Where(s => !bookedSeatIds.Contains(s.Id))
+                .ToList();
 
+            // 5. Map to DTOs
             return _mapper.Map<IEnumerable<SeatDto>>(availableSeats);
         }
+
 
 
         public async Task<IEnumerable<MovieSessionDto>> GetAllMovieSessionsAsync()

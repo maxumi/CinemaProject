@@ -20,7 +20,7 @@ export class BookingService {
   }
 
   createBooking(booking: CreateDetailedBooking) {
-    return this.http.post<Booking>(this.baseUrl, booking);
+    return this.http.post<Booking>(`${this.baseUrl}/new-booking`, booking);
   }
 
   updateBooking(id: number, booking: UpdateBookingDto) {

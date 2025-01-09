@@ -16,19 +16,23 @@ namespace Cinema.Infrastructure.Repository
             _context = context;
         }
 
-        public async Task CreateNewBookingAsync(Booking booking, List<int> seatIds)
+        public async Task CreateNewBookingAsync(
+            Booking booking,
+            List<int> seatIds,
+            PaymentDetail paymentDetail
+        )
         {
-            // This is doing more by creating 2 rows of data (Booking and payment detail). So transaction is used.
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
+                // Validate seat IDs to be safe.
                 var seats = await _context.Seats
                     .Where(s => seatIds.Contains(s.Id))
                     .ToListAsync();
 
                 if (seats.Count != seatIds.Count)
                 {
-                    throw new ArgumentException("One or more Seat IDs are wrong or invalid.");
+                    throw new ArgumentException("One or more Seat IDs are invalid.");
                 }
 
                 booking.Seats = seats;
@@ -36,8 +40,11 @@ namespace Cinema.Infrastructure.Repository
                 await _context.Bookings.AddAsync(booking);
                 await _context.SaveChangesAsync();
 
-                booking.PaymentDetail.BookingId = booking.Id;
-                await _context.PaymentDetails.AddAsync(booking.PaymentDetail);
+                paymentDetail.BookingId = booking.Id;
+                paymentDetail.Id = 0;
+
+                // Add payment detail
+                await _context.PaymentDetails.AddAsync(paymentDetail);
                 await _context.SaveChangesAsync();
 
                 await transaction.CommitAsync();
@@ -48,6 +55,7 @@ namespace Cinema.Infrastructure.Repository
                 throw;
             }
         }
+
 
 
         public async Task<IEnumerable<Booking>> GetAllAsync()

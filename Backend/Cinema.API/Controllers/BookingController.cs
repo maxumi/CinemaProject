@@ -11,9 +11,11 @@ namespace Cinema.API.Controllers
     public class BookingController : ControllerBase
     {
         private readonly BookingService _bookingService;
+        private readonly MovieService _movieService;
 
-        public BookingController(BookingService bookingService)
+        public BookingController(BookingService bookingService, MovieService movieService)
         {
+            _movieService = movieService;
             _bookingService = bookingService;
         }
 

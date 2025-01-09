@@ -22,20 +22,20 @@ namespace Cinema.Application.Services
 
         public async Task<int> CreateNewBookingAsync(CreateDetailedBooking bookingDto)
         {
+            PaymentDetail paymentDetail = new PaymentDetail
+            {
+                Amount = bookingDto.TotalAmount,
+                Method = bookingDto.PaymentDetail.Method,
+                Date = bookingDto.PaymentDetail.Date
+            };
             var booking = new Booking
             {
                 UserId = bookingDto.UserId,
                 NumberOfTickets = bookingDto.NumberOfTickets,
-                MovieSessionId = bookingDto.MovieSessionId,
-                PaymentDetail = new PaymentDetail
-                {
-                    Amount = bookingDto.TotalAmount,
-                    Method = bookingDto.PaymentDetail.Method,
-                    Date = bookingDto.PaymentDetail.Date
-                }
+                MovieSessionId = bookingDto.MovieSessionId
             };
 
-            await _bookingRepository.CreateNewBookingAsync(booking, bookingDto.SeatIds);
+            await _bookingRepository.CreateNewBookingAsync(booking, bookingDto.SeatIds, paymentDetail);
 
             return booking.Id;
         }

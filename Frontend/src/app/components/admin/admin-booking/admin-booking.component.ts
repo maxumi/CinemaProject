@@ -5,7 +5,7 @@ import { BookingService } from '../../../services/booking.service';
 import { UserService } from '../../../services/user.service';
 import { MovieSessionService } from '../../../services/movie-session.service';
 import { UserItem } from '../../../models/user.models';
-import { Booking, CreateDetailedBooking } from '../../../models/bookings.models';
+import { Booking, CreateDetailedBooking, PaymentMethod } from '../../../models/bookings.models';
 import { MovieSession } from '../../../models/movie-session.models';
 import { Seat } from '../../../models/seat.models';
 import { CommonModule } from '@angular/common';
@@ -18,21 +18,14 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./admin-booking.component.css'],
 })
 export class AdminBookingComponent implements OnInit {
-  // Reactive form for booking creation/edit
   bookingForm: FormGroup;
-  
-  // Lists & variables for tracking data
   bookings: Booking[] = [];
   users: UserItem[] = [];
   movieSessions: MovieSession[] = [];
   seats: Seat[] = [];
   selectedSeatIds: number[] = [];
-
-  // For user search with debounce
-  private searchUserSubject = new Subject<string>();
-
-  // Track which booking is selected (for "Edit" vs "Add")
   selectedBookingId: number | null = null;
+  private searchUserSubject = new Subject<string>();
 
   constructor(
     private bookingService: BookingService,
@@ -40,16 +33,15 @@ export class AdminBookingComponent implements OnInit {
     private movieSessionService: MovieSessionService,
     private fb: FormBuilder
   ) {
-    // Initialize form controls
     this.bookingForm = this.fb.group({
-      userId: ['', [Validators.required]],
-      numberOfTickets: [0, [Validators.required, Validators.min(1)]],
-      movieSessionId: ['', [Validators.required]],
-      seatIds: ['', [Validators.required]], // Comma-separated
+      userId: ['', Validators.required],
+      numberOfTickets: [{ value: 0, disabled: true }, [Validators.required, Validators.min(1)]],
+      movieSessionId: ['', Validators.required],
+      seatIds: ['', Validators.required],
       paymentDetail: this.fb.group({
-        amount: [0, [Validators.required, Validators.min(0.01)]],
-        method: ['', [Validators.required]],
-        date: [new Date(), [Validators.required]],
+        amount: [{ value: 0, disabled: true }, Validators.required],
+        method: ['', Validators.required],
+        date: [new Date(), Validators.required],
       }),
     });
   }
@@ -60,138 +52,132 @@ export class AdminBookingComponent implements OnInit {
     this.setupUserSearch();
   }
 
-  // -----------------------
-  // Data Loading
-  // -----------------------
-  private loadBookings(): void {
+  loadBookings() {
     this.bookingService.getBookings().subscribe({
-      next: (bookings) => (this.bookings = bookings),
-      error: (err) => console.error('Failed to load bookings:', err),
+      next: (b) => (this.bookings = b),
     });
   }
 
-  private loadMovieSessions(): void {
+  loadMovieSessions() {
     this.movieSessionService.getAllMovieSessions().subscribe({
-      next: (sessions) => (this.movieSessions = sessions),
-      error: (err) => console.error('Failed to load movie sessions:', err),
+      next: (ms) => (this.movieSessions = ms),
     });
   }
 
-  private loadSeats(sessionId: number): void {
-    this.movieSessionService.getSeatsBySessionId(sessionId).subscribe({
-      next: (seats) => (this.seats = seats),
-      error: (err) => console.error('Failed to load seats:', err),
+  loadSeats(id: number) {
+    this.movieSessionService.getSeatsBySessionId(id).subscribe({
+      next: (s) => (this.seats = s),
     });
   }
 
-  // -----------------------
-  // User Search
-  // -----------------------
-  private setupUserSearch(): void {
+  setupUserSearch() {
     this.searchUserSubject
       .pipe(
         debounceTime(300),
-        switchMap((query) => {
-          if (!query.trim()) {
-            this.users = [];
-            return [];
-          }
-          return this.userService.getSelectedUsers(query);
-        })
+        switchMap((q) => (q.trim() ? this.userService.getSelectedUsers(q) : []))
       )
       .subscribe({
-        next: (users) => (this.users = users),
-        error: (err) => console.error('Failed to search users:', err),
+        next: (u) => (this.users = u),
       });
   }
 
-  onUserSearch(query: string): void {
-    this.searchUserSubject.next(query);
+  onUserSearch(q: string) {
+    this.searchUserSubject.next(q);
   }
 
-  selectUser(user: UserItem): void {
-    this.bookingForm.patchValue({ userId: user.id });
+  selectUser(u: UserItem) {
+    this.bookingForm.patchValue({ userId: u.id });
     this.users = [];
   }
 
-  // -----------------------
-  // Session & Seat Management
-  // -----------------------
-  onSessionChange(sessionId: string): void {
-    const parsedSessionId = Number(sessionId);
-    if (!isNaN(parsedSessionId)) {
-      this.bookingForm.patchValue({ movieSessionId: parsedSessionId });
-      this.loadSeats(parsedSessionId);
-    } else {
-      console.error('Invalid session ID:', sessionId);
+  onSessionChange(v: string) {
+    const parsed = +v;
+    if (!isNaN(parsed)) {
+      this.bookingForm.patchValue({ movieSessionId: parsed });
+      this.loadSeats(parsed);
+      this.selectedSeatIds = [];
+      this.bookingForm.patchValue({ seatIds: '' });
+      this.updateBookingFields(); // Single function call
     }
   }
 
-  toggleSeatSelection(seatId: number): void {
-    if (this.selectedSeatIds.includes(seatId)) {
-      this.selectedSeatIds = this.selectedSeatIds.filter((id) => id !== seatId);
+  toggleSeatSelection(id: number) {
+    if (this.selectedSeatIds.includes(id)) {
+      this.selectedSeatIds = this.selectedSeatIds.filter(x => x !== id);
     } else {
-      this.selectedSeatIds.push(seatId);
+      this.selectedSeatIds.push(id);
     }
-    this.bookingForm.patchValue({ seatIds: this.selectedSeatIds.join(',') });
+    this.bookingForm.patchValue({ seatIds: this.selectedSeatIds.join(',') }, { emitEvent: false });
+    this.updateBookingFields(); // Single function call
   }
 
-  // -----------------------
-  // Booking Management
-  // -----------------------
-  selectBooking(bookingId: number): void {
-    this.selectedBookingId = bookingId;
-    // TODO: If you want to edit an existing booking, fetch it and populate the form:
-    // e.g., this.bookingService.getBookingById(bookingId).subscribe(...)
-    // For now, we'll only highlight the selected booking in the list
+  /** Single function that updates tickets & amount. */
+  private updateBookingFields() {
+    const val = this.bookingForm.getRawValue();
+    const msId = val.movieSessionId;
+
+    // 1) Update numberOfTickets based on selected seats
+    const count = this.selectedSeatIds.length;
+    this.bookingForm.get('numberOfTickets')?.patchValue(count, { emitEvent: false });
+
+    // 2) Calculate price
+    if (!msId || count < 1) {
+      this.bookingForm.get('paymentDetail')?.patchValue({ amount: 0 }, { emitEvent: false });
+      return;
+    }
+    const session = this.movieSessions.find(s => s.id === msId);
+    if (!session) {
+      this.bookingForm.get('paymentDetail')?.patchValue({ amount: 0 }, { emitEvent: false });
+      return;
+    }
+    const total = session.price * count;
+    this.bookingForm.get('paymentDetail')?.patchValue({ amount: total }, { emitEvent: false });
   }
 
-  createBooking(): void {
-    if (!this.bookingForm.valid) return;
+  createBooking() {
+    if (this.bookingForm.invalid) return;
 
-    const formValue = this.bookingForm.value;
-    const newBooking: CreateDetailedBooking = {
-      userId: formValue.userId,
-      numberOfTickets: formValue.numberOfTickets,
-      movieSessionId: formValue.movieSessionId,
+    const fv = this.bookingForm.getRawValue();
+    const paymentMethodNumber = PaymentMethod[fv.paymentDetail.method as keyof typeof PaymentMethod];
+
+
+    const dto: CreateDetailedBooking = {
+      userId: fv.userId,
+      numberOfTickets: fv.numberOfTickets,
+      movieSessionId: fv.movieSessionId,
       seatIds: this.selectedSeatIds,
-      totalAmount: formValue.paymentDetail.amount,
-      bookingDate: formValue.paymentDetail.date,
+      totalAmount: fv.paymentDetail.amount,
+      bookingDate: fv.paymentDetail.date,
       paymentDetail: {
-        amount: formValue.paymentDetail.amount,
-        method: formValue.paymentDetail.method,
-        date: formValue.paymentDetail.date,
+        amount: fv.paymentDetail.amount,
+        method: paymentMethodNumber,
+        date: fv.paymentDetail.date,
       },
     };
-
-    this.bookingService.createBooking(newBooking).subscribe({
-      next: () => {
-        this.loadBookings();
-        this.resetForm();
-      },
-      error: (err) => console.error('Failed to create booking:', err),
+    this.bookingService.createBooking(dto).subscribe(() => {
+      this.loadBookings();
+      this.resetForm();
     });
   }
 
-  newBooking(): void {
+  newBooking() {
     this.resetForm();
   }
 
-  deleteBooking(): void {
+  deleteBooking() {
     if (this.selectedBookingId !== null) {
-      if (confirm('Are you sure you want to delete this booking?')) {
-        this.bookingService.deleteBooking(this.selectedBookingId).subscribe({
-          next: () => {
-            this.loadBookings();
-            this.resetForm();
-          },
-          error: (err) => console.error('Failed to delete booking:', err),
-        });
-      }
+      this.bookingService.deleteBooking(this.selectedBookingId).subscribe(() => {
+        this.loadBookings();
+        this.resetForm();
+      });
     }
   }
 
-  private resetForm(): void {
+  selectBooking(id: number) {
+    this.selectedBookingId = id;
+  }
+
+  resetForm() {
     this.bookingForm.reset({
       userId: '',
       numberOfTickets: 0,

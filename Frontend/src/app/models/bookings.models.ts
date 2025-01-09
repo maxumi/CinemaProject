@@ -24,8 +24,8 @@ export interface Booking {
   }
 
   export enum PaymentMethod {
-    Online,
-    OnPremise
+    Online = 0,
+    OnPremise = 1
   }
   export interface PaymentDetail {
     amount: number; // Total payment amount

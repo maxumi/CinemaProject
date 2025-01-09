@@ -39,6 +39,8 @@ namespace Cinema.Infrastructure.Repository
             return await _context.MovieSessions
                 .Include(ms => ms.Movie)
                 .Include(ms => ms.CinemaHall)
+                .Include(ms => ms.Bookings)
+                    .ThenInclude(b => b.Seats)
                 .FirstOrDefaultAsync(ms => ms.Id == id);
         }
 
