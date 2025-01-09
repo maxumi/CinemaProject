@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CreateMovieSessionDto, MovieSession, UpdateMovieSessionDto } from '../models/movie-session.models';
 import { environment } from '../../environments/environment';
+import { Seat } from '../models/seat.models';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,10 @@ export class MovieSessionService {
   private baseUrl = environment.apiBaseUrl+"/MovieSession";
 
   constructor(private http: HttpClient) { }
+
+  getSeatsBySessionId(sessionId: number) {
+    return this.http.get<Seat[]>(`${this.baseUrl}/${sessionId}/available-seats`);
+  }
 
   getAllMovieSessions() {
     return this.http.get<MovieSession[]>(`${this.baseUrl}`);

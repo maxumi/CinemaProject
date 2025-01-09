@@ -105,6 +105,7 @@ namespace Cinema.API
             builder.Services.AddScoped<MovieSessionService>();
             builder.Services.AddScoped<BookingRepository>();
             builder.Services.AddScoped<BookingService>();
+            builder.Services.AddScoped<SeatRepository>();
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -130,11 +131,25 @@ namespace Cinema.API
                         ValidAudience = jwtSettings.GetValue<string>("Audience"),
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
                     };
+                    // try to get get JWT token from cokies using this code for auth.
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            // Look for the token in the "jwt" cookie
+                            var token = context.Request.Cookies["jwt"];
+                            if (!string.IsNullOrEmpty(token))
+                            {
+                                context.Token = token;
+                            }
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline
+            // Dev stuff
             if (app.Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -143,7 +158,6 @@ namespace Cinema.API
             }
             else
             {
-                // Production-only configurations
                 app.UseHsts();
             }
 

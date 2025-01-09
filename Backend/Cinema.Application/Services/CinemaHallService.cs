@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Cinema.Application.DTOs.CinemaHall;
+using Cinema.Application.DTOs.CinemaHall.Seat;
 using Cinema.Domain.Entities;
 using Cinema.Infrastructure.Repository;
 
@@ -19,6 +20,20 @@ namespace Cinema.Application.Services
             _cinemaHallRepository = cinemaHallRepository;
             _mapper = mapper;
         }
+
+        public async Task<IEnumerable<SeatDto>> GetSeatsByHallIdAsync(int hallId)
+        {
+            var hall = await _cinemaHallRepository.GetByIdAsync(hallId);
+            if (hall == null) throw new KeyNotFoundException($"hall not found.");
+
+            return hall.Seats.Select(seat => new SeatDto
+            {
+                Id = seat.Id,
+                SeatNumber = seat.SeatNumber,
+                CinemaHallId = seat.CinemaHallId
+            });
+        }
+
 
         public async Task<IEnumerable<CinemaHallDto>> GetAllCinemaHallsAsync()
         {

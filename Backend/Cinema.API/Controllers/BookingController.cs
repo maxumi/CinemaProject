@@ -24,6 +24,24 @@ namespace Cinema.API.Controllers
             return Ok(bookings);
         }
 
+        [HttpPost("new-booking")]
+        public async Task<IActionResult> CreateNewBooking([FromBody] CreateDetailedBooking booking)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var bookingId = await _bookingService.CreateNewBookingAsync(booking);
+                return CreatedAtAction(nameof(GetBooking), new { id = bookingId }, new { id = bookingId });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while creating the booking.", details = ex.Message });
+            }
+        }
+
+
         [HttpGet("{id}")]
         public async Task<ActionResult<BookingDto>> GetBooking(int id)
         {

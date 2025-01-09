@@ -18,5 +18,8 @@ namespace Cinema.Domain.Entities
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public decimal Price { get; set; }
+
+        public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+
     }
 }

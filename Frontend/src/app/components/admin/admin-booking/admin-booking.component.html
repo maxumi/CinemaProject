@@ -1,6 +1,7 @@
 <div class="container mx-auto mt-8">
   <div class="bg-gradient-to-r from-red-900 to-red-700 p-6 rounded-lg shadow-lg">
     <h3 class="text-xl font-semibold text-yellow-300 mb-4">Bookings</h3>
+    <!-- Booking List -->
     <ul class="space-y-2 overflow-auto max-h-48 pr-2 max-w-sm">
       <li
         *ngFor="let booking of bookings"
@@ -15,6 +16,7 @@
       </li>
     </ul>
 
+    <!-- Action Buttons -->
     <div class="mt-6 flex space-x-4">
       <button
         (click)="newBooking()"
@@ -35,9 +37,12 @@
       <h3 class="text-xl font-semibold text-yellow-300 mb-4">
         {{ selectedBookingId ? 'Edit Booking' : 'Create Booking' }}
       </h3>
-      <form [formGroup]="bookingForm" (ngSubmit)="saveBooking()">
+
+      <!-- Booking Form -->
+      <form [formGroup]="bookingForm" (ngSubmit)="createBooking()">
+
         <!-- User Search -->
-        <div class="mb-4">
+        <div class="mb-4 relative">
           <label class="block text-yellow-300 font-medium mb-2">Search User:</label>
           <input
             type="text"
@@ -81,35 +86,70 @@
           />
         </div>
 
-        <!-- Movie Session ID -->
+        <!-- Movie Session Selection -->
         <div class="mb-4">
-          <label class="block text-yellow-300 font-medium mb-2">Movie Session ID:</label>
-          <input
+          <label class="block text-yellow-300 font-medium mb-2">Movie Session:</label>
+          <select
+            #movieSessionId
             formControlName="movieSessionId"
-            type="number"
             class="border border-yellow-300 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
-          />
+            (change)="onSessionChange(movieSessionId.value)"
+          >
+            <option value="" disabled>Select a session</option>
+            <option *ngFor="let session of movieSessions" [value]="session.id">
+              Movie ID: {{ session.movieId }} —
+              Start: {{ session.startTime | date }} —
+              Price: {{ session.price | currency }}
+            </option>
+          </select>
         </div>
 
-        <!-- Payment Detail ID -->
+        <!-- Seat Selection -->
         <div class="mb-4">
-          <label class="block text-yellow-300 font-medium mb-2">Payment Detail ID:</label>
-          <input
-            formControlName="paymentDetailId"
-            type="number"
-            class="border border-yellow-300 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
-          />
+          <label class="block text-yellow-300 font-medium mb-2">Seats:</label>
+          <div class="grid grid-cols-4 gap-2">
+            <div
+              *ngFor="let seat of seats"
+              class="p-2 bg-yellow-300 text-red-900 rounded-lg cursor-pointer"
+              (click)="toggleSeatSelection(seat.id)"
+              [class.bg-yellow-500]="selectedSeatIds.includes(seat.id)"
+            >
+              {{ seat.seatNumber }}
+            </div>
+          </div>
         </div>
 
-        <!-- Seat IDs -->
-        <div class="mb-4">
-          <label class="block text-yellow-300 font-medium mb-2">Seat IDs:</label>
-          <input
-            formControlName="seatIds"
-            type="text"
-            class="border border-yellow-300 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
-            placeholder="Comma-separated seat IDs"
-          />
+        <!-- Payment Details (Nested FormGroup) -->
+        <div formGroupName="paymentDetail">
+          <div class="mb-4">
+            <label class="block text-yellow-300 font-medium mb-2">Payment Amount:</label>
+            <input
+              formControlName="amount"
+              type="number"
+              class="border border-yellow-300 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
+            />
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-yellow-300 font-medium mb-2">Payment Method:</label>
+            <select
+              formControlName="method"
+              class="border border-yellow-300 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
+            >
+              <option value="" disabled>Select a method</option>
+              <option [value]="'Online'">Online</option>
+              <option [value]="'OnPremise'">On Premise</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-yellow-300 font-medium mb-2">Payment Date:</label>
+            <input
+              formControlName="date"
+              type="date"
+              class="border border-yellow-300 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
+            />
+          </div>
         </div>
 
         <!-- Submit Button -->

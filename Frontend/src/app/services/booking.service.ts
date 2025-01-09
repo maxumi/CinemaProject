@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Booking, CreateBookingDto, UpdateBookingDto } from '../models/bookings.models';
+import { Booking, CreateBookingDto, CreateDetailedBooking, UpdateBookingDto } from '../models/bookings.models';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 
@@ -19,7 +19,7 @@ export class BookingService {
     return this.http.get<Booking>(`${this.baseUrl}/${id}`);
   }
 
-  createBooking(booking: CreateBookingDto) {
+  createBooking(booking: CreateDetailedBooking) {
     return this.http.post<Booking>(this.baseUrl, booking);
   }
 

@@ -16,6 +16,40 @@ namespace Cinema.Infrastructure.Repository
             _context = context;
         }
 
+        public async Task CreateNewBookingAsync(Booking booking, List<int> seatIds)
+        {
+            // This is doing more by creating 2 rows of data (Booking and payment detail). So transaction is used.
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var seats = await _context.Seats
+                    .Where(s => seatIds.Contains(s.Id))
+                    .ToListAsync();
+
+                if (seats.Count != seatIds.Count)
+                {
+                    throw new ArgumentException("One or more Seat IDs are wrong or invalid.");
+                }
+
+                booking.Seats = seats;
+
+                await _context.Bookings.AddAsync(booking);
+                await _context.SaveChangesAsync();
+
+                booking.PaymentDetail.BookingId = booking.Id;
+                await _context.PaymentDetails.AddAsync(booking.PaymentDetail);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
+
         public async Task<IEnumerable<Booking>> GetAllAsync()
         {
             return await _context.Bookings

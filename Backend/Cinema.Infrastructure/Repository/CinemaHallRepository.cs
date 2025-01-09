@@ -22,6 +22,20 @@ namespace Cinema.Infrastructure.Repository
                 .ToListAsync();
         }
 
+        public async Task<CinemaHall> GetByIdAsync(int id)
+        {
+            var hall = await _context.CinemaHalls
+                .Include(h => h.Seats)
+                .FirstOrDefaultAsync(h => h.Id == id);
+
+            if (hall == null)
+            {
+                throw new KeyNotFoundException($"halls not found.");
+            }
+
+            return hall;
+        }
+
         public async Task<IEnumerable<CinemaHall>> GetAllAsync()
         {
             return await _context.CinemaHalls
@@ -31,13 +45,6 @@ namespace Cinema.Infrastructure.Repository
                 .ToListAsync();
         }
 
-        public async Task<CinemaHall> GetByIdAsync(int id)
-        {
-            return await _context.CinemaHalls
-                .Include(ch => ch.MovieSessions)
-                .Include(ch => ch.Seats)
-                .FirstOrDefaultAsync(ch => ch.Id == id);
-        }
 
         public async Task AddAsync(CinemaHall cinemaHall)
         {

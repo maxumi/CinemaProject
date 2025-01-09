@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cinema.Application.DTOs;
+using Cinema.Application.DTOs.CinemaHall.Seat;
 using Cinema.Application.DTOs.MovieSession;
 using Cinema.Application.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +18,26 @@ namespace Cinema.API.Controllers
         {
             _movieSessionService = movieSessionService;
         }
+
+
+        [HttpGet("{id}/available-seats")]
+        public async Task<ActionResult<IEnumerable<SeatDto>>> GetAvailableSeatsForSession(int id)
+        {
+            try
+            {
+                var availableSeats = await _movieSessionService.GetAvailableSeatsAsync(id);
+                return Ok(availableSeats);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { message = $"Movie session with ID {id} not found." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while retrieving available seats.", details = ex.Message });
+            }
+        }
+
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MovieSessionDto>>> GetMovieSessions()

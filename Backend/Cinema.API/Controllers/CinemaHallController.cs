@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Cinema.Application.DTOs;
 using Cinema.Application.DTOs.CinemaHall;
+using Cinema.Application.DTOs.CinemaHall.Seat;
 using Cinema.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,25 @@ namespace Cinema.API.Controllers
         {
             _cinemaHallService = cinemaHallService;
         }
+
+        [HttpGet("{id}/seats")]
+        public async Task<ActionResult<IEnumerable<SeatDto>>> GetSeatsByHallId(int id)
+        {
+            try
+            {
+                var seats = await _cinemaHallService.GetSeatsByHallIdAsync(id);
+                return Ok(seats);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { message = $"Cinema hall with ID {id} not found." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while fetching seats.", details = ex.Message });
+            }
+        }
+
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CinemaHallDto>>> GetCinemaHalls()

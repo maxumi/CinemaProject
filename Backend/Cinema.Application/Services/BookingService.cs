@@ -20,6 +20,29 @@ namespace Cinema.Application.Services
             _mapper = mapper;
         }
 
+        public async Task<int> CreateNewBookingAsync(CreateDetailedBooking bookingDto)
+        {
+            var booking = new Booking
+            {
+                UserId = bookingDto.UserId,
+                NumberOfTickets = bookingDto.NumberOfTickets,
+                MovieSessionId = bookingDto.MovieSessionId,
+                PaymentDetail = new PaymentDetail
+                {
+                    Amount = bookingDto.TotalAmount,
+                    Method = bookingDto.PaymentDetail.Method,
+                    Date = bookingDto.PaymentDetail.Date
+                }
+            };
+
+            await _bookingRepository.CreateNewBookingAsync(booking, bookingDto.SeatIds);
+
+            return booking.Id;
+        }
+
+
+
+
         public async Task<IEnumerable<BookingDto>> GetAllBookingsAsync()
         {
             var bookings = await _bookingRepository.GetAllAsync();

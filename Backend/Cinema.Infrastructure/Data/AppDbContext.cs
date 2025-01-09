@@ -71,9 +71,18 @@ namespace Cinema.Infrastructure.Data
                 .Property(d => d.DiscountPercentage)
                 .HasColumnType("decimal(5,2)"); // Discount percentages (e.g., 99.99)
 
-            modelBuilder.Entity<MovieSession>()
-                .Property(ms => ms.Price)
-                .HasColumnType("decimal(18,2)"); // Movie session price (currency format)
+            modelBuilder.Entity<MovieSession>(entity =>
+            {
+                // Define the one-to-many relationship with Booking
+                entity.HasMany(ms => ms.Bookings)
+                      .WithOne(b => b.MovieSession)
+                      .HasForeignKey(b => b.MovieSessionId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                // Configure Price to use decimal(18,2)
+                entity.Property(ms => ms.Price)
+                      .HasColumnType("decimal(18,2)"); // Movie session price (currency format)
+            });
 
             modelBuilder.Entity<PaymentDetail>()
                 .Property(pd => pd.Amount)

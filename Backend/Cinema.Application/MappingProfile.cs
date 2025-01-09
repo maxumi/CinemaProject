@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Cinema.Application.DTOs.Booking;
 using Cinema.Application.DTOs.CinemaHall;
+using Cinema.Application.DTOs.CinemaHall.Seat;
 using Cinema.Application.DTOs.Movie;
 using Cinema.Application.DTOs.Movie.Genre;
 using Cinema.Application.DTOs.MovieSession;
@@ -44,6 +45,11 @@ namespace Cinema.Application
             CreateMap<CreateBookingDto, Booking>()
                 .ForMember(dest => dest.Seats, opt => opt.Ignore()); // Map seats explicitly when needed
             CreateMap<UpdateBookingDto, Booking>().ReverseMap();
+
+            CreateMap<Seat, SeatDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.SeatNumber, opt => opt.MapFrom(src => src.SeatNumber))
+                .ForMember(dest => dest.CinemaHallId, opt => opt.MapFrom(src => src.CinemaHallId));
 
             // Review mappings
             CreateMap<Review, ReviewDto>().ReverseMap();
