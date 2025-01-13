@@ -6,6 +6,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { Role } from './models/user.models';
+import { BookingComponent } from './components/booking/booking.component';
 
 
 export const routes: Routes = [
@@ -27,5 +28,13 @@ export const routes: Routes = [
         path: "admin",
         component: AdminComponent,
         data: { roles: [Role.Administrator] }
-    }
+    },
+    {
+        path: 'bookings',
+        component: BookingComponent,
+      },
+      {
+        path: 'bookings/:movieSessionId',
+        component: BookingComponent,
+      },
 ];

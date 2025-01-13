@@ -1,0 +1,100 @@
+<div class="container mx-auto mt-8">
+  <div class="bg-gradient-to-r from-red-900 to-red-700 p-6 rounded-lg shadow-lg">
+    <h2 class="text-xl font-semibold text-yellow-300 mb-6">Book Your Seats</h2>
+
+    <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
+      <!-- Movie Selection -->
+      <div class="mb-4">
+        <label class="block text-yellow-300 mb-2">Select Movie:</label>
+        <select
+        #selectMovie
+          formControlName="movieId"
+          class="border border-yellow-300 p-3 rounded-lg w-full bg-gray-200 text-red-900"
+          (change)="onMovieChange(+selectMovie.value)"
+        >
+          <option value="">Select a movie</option>
+          <option *ngFor="let movie of movies" [value]="movie.id">
+            {{ movie.title }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Movie Session Selection -->
+      <div class="mb-4" *ngIf="selectedMovie">
+        <label class="block text-yellow-300 mb-2">Select Movie Session:</label>
+        <select
+        #selectMovieSession
+          formControlName="movieSessionId"
+          class="border border-yellow-300 p-3 rounded-lg w-full bg-gray-200 text-red-900"
+          (change)="onSessionChange(+selectMovieSession.value)"
+        >
+          <option value="">Select a session</option>
+          <option
+          *ngFor="let session of getFilteredSessions()"
+          [value]="session.id"
+        >
+          {{ session.startTime | date: 'shortTime' }} - {{ session.endTime | date: 'shortTime' }}
+        </option>
+        </select>
+      </div>
+
+      <!-- Cinema Hall Selection -->
+      <div class="mb-4" *ngIf="selectedSession">
+        <label class="block text-yellow-300 mb-2">Cinema Hall:</label>
+        <input
+          type="text"
+          class="border border-yellow-300 p-3 rounded-lg w-full bg-gray-200 text-red-900"
+          [value]="selectedHall?.name"
+          readonly
+        />
+      </div>
+
+      <!-- Seat Selection -->
+      <div class="mb-4" *ngIf="availableSeats.length">
+        <label class="block text-yellow-300 mb-2">Select Seats:</label>
+        <div class="grid grid-cols-4 gap-2">
+          <div
+            *ngFor="let seat of availableSeats"
+            class="p-2 bg-yellow-300 text-red-900 rounded-lg cursor-pointer"
+            (click)="toggleSeatSelection(seat)"
+            [class.bg-yellow-500]="isSeatSelected(seat)"
+          >
+            {{ seat.seatNumber }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <div class="bg-red-800 text-yellow-300 p-4 rounded-lg mt-4" *ngIf="selectedHall && selectedSeats.length">
+        <h3 class="text-lg font-semibold">Summary:</h3>
+        <p>
+          <span class="font-semibold">Movie:</span> {{ selectedMovie?.title }}
+        </p>
+        <p>
+          <span class="font-semibold">Session:</span> {{ selectedSession?.startTime | date: 'shortTime' }} - {{ selectedSession?.endTime | date: 'shortTime' }}
+        </p>
+        <p>
+          <span class="font-semibold">Hall:</span> {{ selectedHall.name }}
+        </p>
+        <p>
+          <span class="font-semibold">Seats:</span> {{ getSelectedSeatNames() }}
+        </p>
+        <p>
+          <span class="font-semibold">Total Amount:</span> {{ getTotalAmount() | currency }}
+        </p>
+        <p>
+          <span class="font-semibold">Payment Method:</span> {{ bookingForm.value.paymentMethod }}
+        </p>
+      </div>
+      
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="bg-yellow-400 text-red-900 px-6 py-2 rounded-lg hover:bg-yellow-500 shadow mt-6"
+      >
+        Submit Booking
+      </button>
+    </form>
+  </div>
+</div>

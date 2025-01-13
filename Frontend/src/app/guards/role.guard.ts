@@ -12,6 +12,6 @@ export const roleGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  console.error('Access denied- Role not sufficed');
+  console.error('Access denied - role doesnt match');
   return false;
 };
