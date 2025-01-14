@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MovieService } from '../../services/movie.service';
 import { Movie } from '../../models/movie.models';
 import { MovieSession } from '../../models/movie-session.models';
 import { CinemaHall } from '../../models/cinema-hall.models';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-movie-list',
@@ -27,6 +28,7 @@ export class MovieListComponent {
   sessionsAmount = 10;
 
   expandedState: { [movieId: number]: boolean } = {}; // State to handle more text.
+  router = inject(Router)
 
   constructor(private movieService: MovieService) {}
 
@@ -74,6 +76,9 @@ export class MovieListComponent {
       }));
   }
 
+  goToBooking(sessionId: number): void {
+    this.router.navigate(['/booking', sessionId]);
+  }
   // This is a placeholder
   viewMoreSessionsForMovie(movieId: number): void {
     console.log(`View more sessions for movie ID: ${movieId}`);

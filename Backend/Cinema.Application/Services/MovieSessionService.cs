@@ -32,20 +32,22 @@ namespace Cinema.Application.Services
 
             var allSeats = await _seatRepository.GetSeatsByHallIdAsync(session.CinemaHallId);
 
+            // Get booked seat IDs only for the current session
             var bookedSeatIds = session.Bookings
+                .Where(b => b.MovieSessionId == sessionId) // Filter bookings for the specific session
                 .SelectMany(b => b.Seats)
                 .Select(s => s.Id)
                 .Distinct()
                 .ToHashSet();
 
-            // 4. Filter out booked seats
+            // Exclude booked seats
             var availableSeats = allSeats
                 .Where(s => !bookedSeatIds.Contains(s.Id))
                 .ToList();
 
-            // 5. Map to DTOs
             return _mapper.Map<IEnumerable<SeatDto>>(availableSeats);
         }
+
 
 
 
@@ -62,6 +64,16 @@ namespace Cinema.Application.Services
 
             return _mapper.Map<MovieSessionDto>(session);
         }
+
+        public async Task<IEnumerable<MovieSessionDto>> GetMovieSessionsByMovieIdAsync(int movieId)
+        {
+            var sessions = await _movieSessionRepository.GetByMovieIdAsync(movieId);
+            if (!sessions.Any())
+                throw new KeyNotFoundException($"No movie sessions found for movie ID {movieId}.");
+
+            return _mapper.Map<IEnumerable<MovieSessionDto>>(sessions);
+        }
+
 
         public async Task<MovieSessionDto> CreateMovieSessionAsync(CreateMovieSessionDto createMovieSessionDto)
         {

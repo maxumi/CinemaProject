@@ -21,6 +21,10 @@ export class MovieSessionService {
     return this.http.get<MovieSession[]>(`${this.baseUrl}`);
   }
 
+  getMovieSessionsByMovieId(movieId:number){
+    return this.http.get<MovieSession[]>(`${this.baseUrl}/movie/${movieId}`);
+  }
+
   getMovieSessionById(id: number) {
     return this.http.get<MovieSession>(`${this.baseUrl}/${id}`);
   }

@@ -30,11 +30,11 @@ export const routes: Routes = [
         data: { roles: [Role.Administrator] }
     },
     {
-        path: 'bookings',
+        path: 'booking',
         component: BookingComponent,
       },
       {
-        path: 'bookings/:movieSessionId',
+        path: 'booking/:movieSessionId',
         component: BookingComponent,
       },
 ];

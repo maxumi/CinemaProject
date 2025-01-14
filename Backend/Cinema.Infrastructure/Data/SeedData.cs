@@ -20,11 +20,39 @@ namespace Cinema.Infrastructure.Data
 
             // Seeding Seats
             modelBuilder.Entity<Seat>().HasData(
+                // Seats for Hall A
                 new Seat { Id = 1, SeatNumber = "A1", CinemaHallId = 1 },
                 new Seat { Id = 2, SeatNumber = "A2", CinemaHallId = 1 },
-                new Seat { Id = 3, SeatNumber = "B1", CinemaHallId = 2 },
-                new Seat { Id = 4, SeatNumber = "B2", CinemaHallId = 2 }
+                new Seat { Id = 3, SeatNumber = "A3", CinemaHallId = 1 },
+                new Seat { Id = 4, SeatNumber = "A4", CinemaHallId = 1 },
+                new Seat { Id = 5, SeatNumber = "A5", CinemaHallId = 1 },
+                new Seat { Id = 6, SeatNumber = "A6", CinemaHallId = 1 },
+
+                // Seats for Hall B
+                new Seat { Id = 7, SeatNumber = "B1", CinemaHallId = 2 },
+                new Seat { Id = 8, SeatNumber = "B2", CinemaHallId = 2 },
+                new Seat { Id = 9, SeatNumber = "B3", CinemaHallId = 2 },
+                new Seat { Id = 10, SeatNumber = "B4", CinemaHallId = 2 },
+                new Seat { Id = 11, SeatNumber = "B5", CinemaHallId = 2 },
+
+                // Seats for Hall C
+                new Seat { Id = 12, SeatNumber = "C1", CinemaHallId = 3 },
+                new Seat { Id = 13, SeatNumber = "C2", CinemaHallId = 3 },
+                new Seat { Id = 14, SeatNumber = "C3", CinemaHallId = 3 },
+                new Seat { Id = 15, SeatNumber = "C4", CinemaHallId = 3 },
+                new Seat { Id = 16, SeatNumber = "C5", CinemaHallId = 3 },
+                new Seat { Id = 17, SeatNumber = "C6", CinemaHallId = 3 },
+                new Seat { Id = 18, SeatNumber = "C7", CinemaHallId = 3 },
+
+                // Seats for Hall D
+                new Seat { Id = 19, SeatNumber = "D1", CinemaHallId = 4 },
+                new Seat { Id = 20, SeatNumber = "D2", CinemaHallId = 4 },
+                new Seat { Id = 21, SeatNumber = "D3", CinemaHallId = 4 },
+                new Seat { Id = 22, SeatNumber = "D4", CinemaHallId = 4 },
+                new Seat { Id = 23, SeatNumber = "D5", CinemaHallId = 4 },
+                new Seat { Id = 24, SeatNumber = "D6", CinemaHallId = 4 }
             );
+
 
             // Seeding Genres
             modelBuilder.Entity<Genre>().HasData(

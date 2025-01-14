@@ -18,7 +18,11 @@
       <div class="border-t-2 border-red-900 pt-2 space-y-2">
         <div class="text-lg font-bold text-red-900">Showings</div>
         <div class="flex flex-col gap-2 items-center">
-          <div *ngFor="let sessionData of getSessionsForMovie(movie.id)" class="bg-gradient-to-br from-red-900 to-red-700 text-yellow-300 rounded-md px-3 py-2 text-center text-sm font-bold w-3/4 hover:bg-yellow-400 hover:text-gray-300 cursor-pointer">
+          <div
+              *ngFor="let sessionData of getSessionsForMovie(movie.id)"
+              class="bg-gradient-to-br from-red-900 to-red-700 text-yellow-300 rounded-md px-3 py-2 text-center text-sm font-bold w-3/4 hover:bg-yellow-400 hover:text-gray-300 cursor-pointer"
+              (click)="goToBooking(sessionData.session.id)"
+            >
             <div>{{ sessionData.session.startTime | date: 'shortTime' }}</div>
             <div>Hall: {{ sessionData.hall?.name || 'Unknown Hall' }}</div>
           </div>

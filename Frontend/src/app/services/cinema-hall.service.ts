@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CinemaHall, CreateCinemaHallDto, UpdateCinemaHallDto } from '../models/cinema-hall.models';
 import { environment } from '../../environments/environment';
+import { MovieSession } from '../models/movie-session.models';
 
 @Injectable({
   providedIn: 'root'

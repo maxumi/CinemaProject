@@ -44,6 +44,17 @@ namespace Cinema.Infrastructure.Repository
                 .FirstOrDefaultAsync(ms => ms.Id == id);
         }
 
+        public async Task<IEnumerable<MovieSession>> GetByMovieIdAsync(int movieId)
+        {
+            return await _context.MovieSessions
+                .Include(ms => ms.Movie)
+                .Include(ms => ms.CinemaHall)
+                .Where(ms => ms.MovieId == movieId)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+
         public async Task AddAsync(MovieSession session)
         {
             await _context.MovieSessions.AddAsync(session);

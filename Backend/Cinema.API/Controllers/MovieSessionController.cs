@@ -60,6 +60,25 @@ namespace Cinema.API.Controllers
             }
         }
 
+        [HttpGet("movie/{movieId}")]
+        public async Task<ActionResult<IEnumerable<MovieSessionDto>>> GetMovieSessionsByMovieId(int movieId)
+        {
+            try
+            {
+                var sessions = await _movieSessionService.GetMovieSessionsByMovieIdAsync(movieId);
+                return Ok(sessions);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { message = $"No movie sessions found for movie ID {movieId}." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while retrieving movie sessions.", details = ex.Message });
+            }
+        }
+
+
 
         [HttpPost]
         public async Task<ActionResult<MovieSessionDto>> CreateMovieSession([FromBody] CreateMovieSessionDto createMovieSessionDto)

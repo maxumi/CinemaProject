@@ -1,12 +1,19 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+
 import { CinemaHall } from '../../models/cinema-hall.models';
 import { Seat } from '../../models/seat.models';
-import { ActivatedRoute } from '@angular/router';
-import { Movie } from '../../models/movie.models';
+import { MovieItem } from '../../models/movie.models';
 import { MovieSession } from '../../models/movie-session.models';
-import { CreateDetailedBooking, PaymentDetail } from '../../models/bookings.models';
+import { CreateDetailedBooking, PaymentDetail, PaymentMethod } from '../../models/bookings.models';
+
+import { BookingService } from '../../services/booking.service';
+import { CinemaHallService } from '../../services/cinema-hall.service';
+import { MovieService } from '../../services/movie.service';
+import { MovieSessionService } from '../../services/movie-session.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-booking',
@@ -16,172 +23,136 @@ import { CreateDetailedBooking, PaymentDetail } from '../../models/bookings.mode
   styleUrls: ['./booking.component.css'],
 })
 export class BookingComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  private route = inject(ActivatedRoute);
+  private bookingService = inject(BookingService);
+  private movieService = inject(MovieService);
+  private userService = inject(UserService);
+  private movieSessionService = inject(MovieSessionService);
+  private cinemaHallService = inject(CinemaHallService);
+
   bookingForm: FormGroup;
-
-  movies: Movie[] = [
-    {
-      id: 1,
-      title: 'Movie A',
-      durationMinutes: 120,
-      releaseDate: new Date('2025-01-01T00:00:00Z'),
-      description: 'An epic adventure.',
-      genres: ['Adventure', 'Drama'],
-    },
-    {
-      id: 2,
-      title: 'Movie B',
-      durationMinutes: 90,
-      releaseDate: new Date('2025-02-15T00:00:00Z'),
-      description: 'A heartwarming comedy.',
-      genres: ['Comedy'],
-    },
-    {
-      id: 3,
-      title: 'Movie C',
-      durationMinutes: 140,
-      releaseDate: new Date('2025-03-10T00:00:00Z'),
-      description: 'A thrilling sci-fi story.',
-      genres: ['Sci-Fi', 'Thriller'],
-    },
-    {
-      id: 4,
-      title: 'Movie D',
-      durationMinutes: 110,
-      releaseDate: new Date('2025-04-05T00:00:00Z'),
-      description: 'A historical drama.',
-      genres: ['Drama', 'History'],
-    },
-  ];
-  
-  movieSessions: MovieSession[] = [
-    {
-      id: 1,
-      movieId: 1,
-      cinemaHallId: 1,
-      startTime: new Date('2025-01-01T10:00:00Z'),
-      endTime: new Date('2025-01-01T12:00:00Z'),
-      price: 14,
-    },
-    {
-      id: 2,
-      movieId: 2,
-      cinemaHallId: 2,
-      startTime: new Date('2025-01-01T15:30:00Z'),
-      endTime: new Date('2025-01-01T17:30:00Z'),
-      price: 14,
-    },
-    {
-      id: 3,
-      movieId: 3,
-      cinemaHallId: 3,
-      startTime: new Date('2025-02-01T14:00:00Z'),
-      endTime: new Date('2025-02-01T16:20:00Z'),
-      price: 16,
-    },
-    {
-      id: 4,
-      movieId: 4,
-      cinemaHallId: 4,
-      startTime: new Date('2025-02-05T18:00:00Z'),
-      endTime: new Date('2025-02-05T19:50:00Z'),
-      price: 15,
-    },
-    {
-      id: 5,
-      movieId: 1,
-      cinemaHallId: 1,
-      startTime: new Date('2025-03-01T10:30:00Z'),
-      endTime: new Date('2025-03-01T12:30:00Z'),
-      price: 14,
-    },
-    {
-      id: 6,
-      movieId: 2,
-      cinemaHallId: 2,
-      startTime: new Date('2025-03-10T15:00:00Z'),
-      endTime: new Date('2025-03-10T17:10:00Z'),
-      price: 14,
-    },
-    {
-      id: 7,
-      movieId: 3,
-      cinemaHallId: 3,
-      startTime: new Date('2025-04-01T18:00:00Z'),
-      endTime: new Date('2025-04-01T20:10:00Z'),
-      price: 16,
-    },
-    {
-      id: 8,
-      movieId: 4,
-      cinemaHallId: 4,
-      startTime: new Date('2025-04-10T14:30:00Z'),
-      endTime: new Date('2025-04-10T16:20:00Z'),
-      price: 15,
-    },
-  ];
-
-  cinemaHalls: CinemaHall[] = [
-    { id: 1, name: 'Hall A', capacity: 50, seatIds: [1, 2, 3, 4] },
-    { id: 2, name: 'Hall B', capacity: 30, seatIds: [5, 6, 7, 8] },
-    { id: 3, name: 'Hall C', capacity: 40, seatIds: [9, 10, 11, 12] },
-    { id: 4, name: 'Hall D', capacity: 35, seatIds: [13, 14, 15, 16] },
-  ];
-  
-  seats: Seat[] = [
-    { id: 1, seatNumber: 'S1', cinemhallId: 1 },
-    { id: 2, seatNumber: 'S2', cinemhallId: 1 },
-    { id: 3, seatNumber: 'S3', cinemhallId: 1 },
-    { id: 4, seatNumber: 'S4', cinemhallId: 1 },
-    { id: 5, seatNumber: 'S5', cinemhallId: 2 },
-    { id: 6, seatNumber: 'S6', cinemhallId: 2 },
-    { id: 7, seatNumber: 'S7', cinemhallId: 2 },
-    { id: 8, seatNumber: 'S8', cinemhallId: 2 },
-    { id: 9, seatNumber: 'S9', cinemhallId: 3 },
-    { id: 10, seatNumber: 'S10', cinemhallId: 3 },
-    { id: 11, seatNumber: 'S11', cinemhallId: 3 },
-    { id: 12, seatNumber: 'S12', cinemhallId: 3 },
-    { id: 13, seatNumber: 'S13', cinemhallId: 4 },
-    { id: 14, seatNumber: 'S14', cinemhallId: 4 },
-    { id: 15, seatNumber: 'S15', cinemhallId: 4 },
-    { id: 16, seatNumber: 'S16', cinemhallId: 4 },
-  ];
-  
-
-  selectedMovie: Movie | null = null;
+  movies: MovieItem[] = [];
+  movieSessions: MovieSession[] = [];
+  cinemaHalls: CinemaHall[] = [];
+  selectedMovie: MovieItem | null = null;
   selectedSession: MovieSession | null = null;
   selectedHall: CinemaHall | null = null;
   availableSeats: Seat[] = [];
   selectedSeats: Seat[] = [];
+  currentUserId = 0;
 
-  constructor(private fb: FormBuilder, private route: ActivatedRoute) {
+  constructor() {
     this.bookingForm = this.fb.group({
       movieId: [null, Validators.required],
       movieSessionId: [null, Validators.required],
-      paymentMethod: [null, Validators.required],
-      cinemaHall: [null, Validators.required],
+      paymentMethod: ['Online', Validators.required],
     });
-  }
-
-  getFilteredSessions() {
-    if (!this.selectedMovie) {
-      return [];
-    }
-    return this.movieSessions.filter((s) => s.movieId === this.selectedMovie!.id);
   }
 
   ngOnInit(): void {
-    const movieSessionId = +this.route.snapshot.paramMap.get('movieSessionId')!;
-    if (movieSessionId) {
-      this.selectSession(movieSessionId);
+    this.movieService.getMovieTitles().subscribe((movies) => {
+      this.movies = movies;
+    });
+
+    this.userService.getCurrentUser().subscribe((user) => {
+      this.currentUserId = user.id;
+    });
+
+    const sessionId = +this.route.snapshot.paramMap.get('movieSessionId')!;
+    if (sessionId) {
+      this.loadSessionFromRoute(sessionId);
+    }
+  }
+
+  loadSessionFromRoute(sessionId: number) {
+    this.movieSessionService.getMovieSessionById(sessionId).subscribe((session) => {
+      this.selectedSession = session;
+
+      this.selectedMovie = this.movies.find((m) => m.id === session.movieId) || null;
+
+      this.movieSessionService.getMovieSessionsByMovieId(session.movieId).subscribe((sessions) => {
+        this.movieSessions = sessions;
+      });
+
+      this.cinemaHallService.getCinemaHallById(session.cinemaHallId).subscribe((hall) => {
+        this.selectedHall = hall;
+      });
+
+      this.bookingForm.patchValue({
+        movieId: session.movieId,
+        movieSessionId: session.id,
+      });
+
+      this.movieSessionService.getSeatsBySessionId(session.id).subscribe((seats) => {
+        this.availableSeats = seats;
+      });
+    });
+  }
+
+  onMovieChange(movieId: number) {
+    if (!movieId) {
+      this.resetForm();
+      return;
     }
 
-    this.bookingForm.get('movieId')?.valueChanges.subscribe((movieId) => {
-      this.onMovieChange(movieId);
+    this.selectedMovie = this.movies.find((m) => m.id === movieId) || null;
+
+    this.movieSessionService.getMovieSessionsByMovieId(movieId).subscribe((sessions) => {
+      this.movieSessions = sessions;
     });
 
-    this.bookingForm.get('movieSessionId')?.valueChanges.subscribe((sessionId) => {
-      this.onSessionChange(sessionId);
+    this.resetSessionAndSeats();
+  }
+
+  onMovieSessionChange(sessionId: number) {
+    if (!sessionId) {
+      this.resetSessionAndSeats();
+      return;
+    }
+
+    this.movieSessionService.getMovieSessionById(sessionId).subscribe((session) => {
+      this.selectedSession = session;
+      this.selectedHall = null;
+      this.availableSeats = [];
+      this.selectedSeats = [];
+
+      this.cinemaHallService.getCinemaHallById(session.cinemaHallId).subscribe((hall) => {
+        this.selectedHall = hall;
+      });
+
+      this.movieSessionService.getSeatsBySessionId(session.id).subscribe((seats) => {
+        this.availableSeats = seats;
+      });
     });
+  }
+
+  // Reset everything except the payment method
+  private resetSessionAndSeats() {
+    this.bookingForm.patchValue(
+      { movieSessionId: null },
+      { emitEvent: false }
+    );
+    this.selectedSession = null;
+    this.selectedHall = null;
+    this.availableSeats = [];
+    this.selectedSeats = [];
+  }
+
+  // Full reset
+  resetForm() {
+    if (!this.bookingForm.pristine) {
+      this.bookingForm.reset(
+        { paymentMethod: 'Online' },
+        { emitEvent: false }
+      );
+    }
+
+    this.selectedMovie = null;
+    this.selectedSession = null;
+    this.selectedHall = null;
+    this.availableSeats = [];
+    this.selectedSeats = [];
   }
 
   getTotalAmount(): number {
@@ -189,42 +160,6 @@ export class BookingComponent implements OnInit {
       return 0;
     }
     return this.selectedSession.price * this.selectedSeats.length;
-  }
-
-  selectSession(sessionId: number) {
-    const session = this.movieSessions.find((s) => s.id === sessionId);
-    if (session) {
-      this.selectedSession = session;
-      this.selectedMovie = this.movies.find((m) => m.id === session.movieId) || null;
-      this.selectedHall = this.cinemaHalls.find((h) => h.id === session.cinemaHallId) || null;
-
-      this.bookingForm.patchValue({
-        movieId: session.movieId,
-        movieSessionId: session.id,
-        cinemaHall: session.cinemaHallId,
-      });
-
-      this.availableSeats = this.seats.filter((seat) => seat.cinemhallId === session.cinemaHallId);
-    }
-  }
-
-  onMovieChange(movieId: number) {
-    this.selectedMovie = this.movies.find((m) => m.id === movieId) || null;
-    this.bookingForm.patchValue({ movieSessionId: null, cinemaHall: null });
-    this.selectedSession = null;
-    this.selectedHall = null;
-    this.availableSeats = [];
-    this.selectedSeats = [];
-  }
-
-  onSessionChange(sessionId: number) {
-    const session = this.movieSessions.find((s) => s.id === sessionId);
-    if (session) {
-      this.selectedSession = session;
-      this.selectedHall = this.cinemaHalls.find((h) => h.id === session.cinemaHallId) || null;
-
-      this.availableSeats = this.seats.filter((seat) => seat.cinemhallId === session.cinemaHallId);
-    }
   }
 
   toggleSeatSelection(seat: Seat) {
@@ -244,29 +179,46 @@ export class BookingComponent implements OnInit {
     return this.selectedSeats.map((seat) => seat.seatNumber).join(', ');
   }
 
+  getFilteredSessions() {
+    if (!this.selectedMovie) {
+      return [];
+    }
+    return this.movieSessions.filter((s) => s.movieId === this.selectedMovie!.id);
+  }
+
   onSubmit() {
     if (this.bookingForm.invalid || !this.selectedSeats.length) {
-      alert('Please complete the form and select seats before submitting.');
+      alert('The form is not complete.');
       return;
     }
 
     const paymentDetail: PaymentDetail = {
       amount: this.getTotalAmount(),
-      method: this.bookingForm.value.paymentMethod,
-      date: new Date(), // Assuming the payment date is the current date
+      method: PaymentMethod[
+        this.bookingForm.value.paymentMethod as keyof typeof PaymentMethod
+      ],
+      date: new Date(),
     };
 
     const booking: CreateDetailedBooking = {
-      userId: 123, // Replace with the actual user ID
+      userId: this.currentUserId,
       numberOfTickets: this.selectedSeats.length,
       movieSessionId: this.selectedSession?.id!,
       seatIds: this.selectedSeats.map((seat) => seat.id),
       totalAmount: paymentDetail.amount,
-      bookingDate: new Date(), // Assuming the booking date is the current date
+      bookingDate: new Date(),
       paymentDetail,
     };
 
-    console.log('Booking Object:', booking);
-    alert('Booking submitted successfully!');
+    this.bookingService.createBooking(booking).subscribe({
+      next: () => {
+        alert('Booking submitted works!');
+        this.resetForm();
+      },
+      error: (err) => {
+        console.error('Error submitting booking:', err);
+        alert('An error occurred.');
+      },
+    });
   }
 }
