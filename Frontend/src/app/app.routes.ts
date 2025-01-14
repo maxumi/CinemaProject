@@ -7,6 +7,8 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { Role } from './models/user.models';
 import { BookingComponent } from './components/booking/booking.component';
+import { roleGuard } from './guards/role.guard';
+import { PagenotfoundComponent } from './components/pagenotfound/pagenotfound.component';
 
 
 export const routes: Routes = [
@@ -27,6 +29,7 @@ export const routes: Routes = [
     {
         path: "admin",
         component: AdminComponent,
+        canActivate: [roleGuard],
         data: { roles: [Role.Administrator] }
     },
     {
@@ -37,4 +40,5 @@ export const routes: Routes = [
         path: 'booking/:movieSessionId',
         component: BookingComponent,
       },
+      { path: '**', component: PagenotfoundComponent }
 ];

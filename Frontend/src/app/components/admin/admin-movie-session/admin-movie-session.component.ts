@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -17,19 +17,18 @@ import { CinemaHallService } from '../../../services/cinema-hall.service';
   styleUrls: ['./admin-movie-session.component.css']
 })
 export class AdminMovieSessionComponent {
+  private sessionService = inject(MovieSessionService)
+  private movieService = inject(MovieService)
+  private cinemaHallService = inject(CinemaHallService)
+  private fb = inject(FormBuilder)
+
   sessionForm: FormGroup;
   sessions: MovieSession[] = [];
   selectedSessionId: number | null = null;
-
   movies: MovieItem[] = [];
   cinemaHalls: CinemaHall[] = [];
 
-  constructor(
-    private sessionService: MovieSessionService,
-    private movieService: MovieService,
-    private cinemaHallService: CinemaHallService,
-    private fb: FormBuilder
-  ) {
+  constructor() {
     this.sessionForm = this.fb.group({
       movieId: [null, [Validators.required]],
       cinemaHallId: [null, [Validators.required]],
@@ -156,7 +155,7 @@ export class AdminMovieSessionComponent {
     };
   }
 
-  // Helper to format the date/time string if you use datetime-local input
+  // Helper function to format a DateTime string
   private formatDateForInput(dateStr: string): string {
     const date = new Date(dateStr);
     const year = date.getFullYear();

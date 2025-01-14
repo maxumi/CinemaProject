@@ -1,52 +1,69 @@
 <div class="container mx-auto mt-8">
   <h2 class="text-3xl font-semibold text-center mb-6 text-yellow-400 uppercase">Login</h2>
 
-  <div *ngIf="isAlreadyLoggedIn" class="bg-gradient-to-r from-red-900 to-red-700 p-6 rounded-lg shadow-lg text-center">
-    <p class="text-lg font-semibold text-yellow-400 mb-2">{{ successMessage }}</p>
-    <p class="text-sm font-medium text-yellow-300">
-      Redirecting in <span class="font-bold">{{ countdown }}</span> seconds...
-    </p>
-  </div>
-
-  <form *ngIf="!isAlreadyLoggedIn" (ngSubmit)="login()" class="bg-gradient-to-r from-red-900 to-red-700 p-6 rounded-lg shadow-lg space-y-6">
-    <div class="mb-6">
-      <label for="email" class="block text-yellow-400 font-medium mb-2">Email:</label>
-      <input
-        type="email"
-        id="email"
-        [(ngModel)]="email"
-        name="email"
-        placeholder="Enter your email"
-        class="border border-yellow-400 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
-        required
-      />
+  @if(isAlreadyLoggedIn){
+    <div class="bg-gradient-to-r from-red-900 to-red-700 p-6 rounded-lg shadow-lg text-center">
+      <p class="text-lg font-semibold text-yellow-400 mb-2">{{ successMessage }}</p>
+      <p class="text-sm font-medium text-yellow-300">
+        Redirecting in <span class="font-bold">{{ countdown }}</span> seconds...
+      </p>
     </div>
+  }
 
-    <div class="mb-6">
-      <label for="password" class="block text-yellow-400 font-medium mb-2">Password:</label>
-      <input
-        type="password"
-        id="password"
-        [(ngModel)]="password"
-        name="password"
-        placeholder="Enter your password"
-        class="border border-yellow-400 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
-        required
-      />
+  @if(!isAlreadyLoggedIn){
+    <form (ngSubmit)="login()" class="bg-gradient-to-r from-red-900 to-red-700 p-6 rounded-lg shadow-lg space-y-6">
+      <div class="mb-6">
+        <label for="email" class="block text-yellow-400 font-medium mb-2">Email:</label>
+        <input
+          type="email"
+          id="email"
+          [(ngModel)]="email"
+          name="email"
+          placeholder="Enter your email"
+          class="border border-yellow-400 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
+          required
+        />
+      </div>
+  
+      <div class="mb-6">
+        <label for="password" class="block text-yellow-400 font-medium mb-2">Password:</label>
+        <input
+          type="password"
+          id="password"
+          [(ngModel)]="password"
+          name="password"
+          placeholder="Enter your password"
+          class="border border-yellow-400 p-3 rounded-lg w-full focus:ring focus:ring-red-400 focus:outline-none text-black"
+          required
+        />
+      </div>
+  
+      <button
+        type="submit"
+        class="w-full bg-yellow-400 text-red-900 font-bold py-3 px-4 rounded-lg transition hover:bg-yellow-500 hover:text-red-900 shadow-lg"
+      >
+        Login
+      </button>
+    </form>
+
+    <div class="text-center mt-4">
+      <a
+        routerLink="/register"
+        class="text-yellow-400 font-medium hover:underline"
+      >
+        You don't have an account? Register here
+      </a>
     </div>
+  }
 
-    <button
-      type="submit"
-      class="w-full bg-yellow-400 text-red-900 font-bold py-3 px-4 rounded-lg transition hover:bg-yellow-500 hover:text-red-900 shadow-lg"
-    >
-      Login
-    </button>
-  </form>
-
-  <div *ngIf="successMessage && !isAlreadyLoggedIn" class="text-green-400 font-semibold text-center mt-4">
-    {{ successMessage }}
-  </div>
-  <div *ngIf="errorMessage" class="text-red-400 font-semibold text-center mt-4">
-    {{ errorMessage }}
-  </div>
+  @if(successMessage && !isAlreadyLoggedIn){
+    <div class="text-green-400 font-semibold text-center mt-4">
+      {{ successMessage }}
+    </div>
+  }
+  @if(errorMessage){
+    <div class="text-red-400 font-semibold text-center mt-4">
+      {{ errorMessage }}
+    </div>
+  }
 </div>

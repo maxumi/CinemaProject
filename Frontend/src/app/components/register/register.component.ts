@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
@@ -11,7 +11,10 @@ import { Role } from '../../models/user.models';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent {
+  private authService = inject(AuthService)
+  private router = inject(Router)
+  
   firstName: string = '';
   lastName: string = '';
   email: string = '';
@@ -22,7 +25,7 @@ export class RegisterComponent implements OnInit {
   isLoggedIn: boolean = false; // Check if user is logged in
   alreadyLoggedInMessage: string = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor() {}
 
   ngOnInit(): void {
     this.checkLoginStatus();

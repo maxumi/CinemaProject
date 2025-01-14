@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { UpdateUserDto, User } from '../../models/user.models';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService } from '../../services/user.service';
@@ -11,11 +11,15 @@ import { CommonModule } from '@angular/common';
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent {
+  private userService = inject(UserService)
+  private fb = inject(FormBuilder)
+
+  // Expect user always.
   user!: User;
   profileForm!: FormGroup;
   isEditing = false;
 
-  constructor(private userService: UserService, private fb: FormBuilder) {}
+  constructor() {}
 
   ngOnInit(): void {
     this.userService.getCurrentUser().subscribe({

@@ -13,22 +13,24 @@ import { CommonModule, DatePipe } from '@angular/common';
   providers: [DatePipe], 
 })
 export class AdminMovieComponent {
-    movieForm: FormGroup;
-    movieTitles: MovieItem[] = [];
-    genres: Genre[] = [];
-    selectedMovieId: number | null = null;
-  
-    private datePipe = inject(DatePipe)
-  
-    constructor(private movieService: MovieService, private fb: FormBuilder) {
-      this.movieForm = this.fb.group({
-        title: ['', [Validators.required]],
-        durationMinutes: [0, [Validators.required, Validators.min(1)]],
-        releaseDate: ['', [Validators.required]],
-        description: ['', [Validators.required, Validators.minLength(10)]],
-        genreIds: [[]]
-      });
-    }
+  private movieService = inject(MovieService)
+  private fb = inject(FormBuilder)
+  // DatePipe is used to convert dates here.
+  private datePipe = inject(DatePipe)
+  movieForm: FormGroup;
+  movieTitles: MovieItem[] = [];
+  genres: Genre[] = [];
+  selectedMovieId: number | null = null;
+
+  constructor() {
+    this.movieForm = this.fb.group({
+      title: ['', [Validators.required]],
+      durationMinutes: [0, [Validators.required, Validators.min(1)]],
+      releaseDate: ['', [Validators.required]],
+      description: ['', [Validators.required, Validators.minLength(10)]],
+      genreIds: [[]]
+    });
+  }
   
     ngOnInit(): void {
       this.loadMovieTitles();

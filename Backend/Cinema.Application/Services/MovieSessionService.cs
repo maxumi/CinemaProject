@@ -32,7 +32,6 @@ namespace Cinema.Application.Services
 
             var allSeats = await _seatRepository.GetSeatsByHallIdAsync(session.CinemaHallId);
 
-            // Get booked seat IDs only for the current session
             var bookedSeatIds = session.Bookings
                 .Where(b => b.MovieSessionId == sessionId) // Filter bookings for the specific session
                 .SelectMany(b => b.Seats)

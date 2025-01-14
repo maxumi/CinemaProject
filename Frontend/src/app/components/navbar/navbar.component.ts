@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { TokenServiceService } from '../../services/token-service.service';
 import { CommonModule } from '@angular/common';
@@ -12,11 +12,14 @@ import { Role } from '../../models/user.models';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent {
+  private authService = inject(AuthService)
   isAuthenticated$!: Observable<boolean>;
   userRole$!: Observable<Role | null>;
   role = Role
-  constructor(private authService: AuthService) {}
+
+  
+  constructor() {}
 
   ngOnInit() {
     this.isAuthenticated$ = this.authService.isLoggedIn$;

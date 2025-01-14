@@ -34,14 +34,12 @@
       </button>
     </div>
 
-    <!-- Booking Form -->
     <div class="mt-6">
       <h3 class="text-xl font-semibold text-yellow-300 mb-4">
         {{ selectedBookingId ? 'Edit Booking' : 'Create Booking' }}
       </h3>
 
       <form [formGroup]="bookingForm" (ngSubmit)="createBooking()">
-        <!-- Search for User -->
         <div class="mb-4 relative">
           <label class="block text-yellow-300 font-medium mb-2">Search User:</label>
           <input

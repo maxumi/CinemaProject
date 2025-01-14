@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Subject, debounceTime, switchMap } from 'rxjs';
+import { Subject, debounceTime, of, switchMap } from 'rxjs';
 import { BookingService } from '../../../services/booking.service';
 import { UserService } from '../../../services/user.service';
 import { MovieSessionService } from '../../../services/movie-session.service';
@@ -17,7 +17,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './admin-booking.component.html',
   styleUrls: ['./admin-booking.component.css'],
 })
-export class AdminBookingComponent implements OnInit {
+export class AdminBookingComponent {
   bookingForm: FormGroup;
   bookings: Booking[] = [];
   users: UserItem[] = [];
@@ -74,7 +74,7 @@ export class AdminBookingComponent implements OnInit {
     this.searchUserSubject
       .pipe(
         debounceTime(300),
-        switchMap((q) => (q.trim() ? this.userService.getSelectedUsers(q) : []))
+        switchMap((q) => (q.trim() ? this.userService.getSelectedUsers(q) : of([])))
       )
       .subscribe({
         next: (u) => (this.users = u),
@@ -97,7 +97,7 @@ export class AdminBookingComponent implements OnInit {
       this.loadSeats(parsed);
       this.selectedSeatIds = [];
       this.bookingForm.patchValue({ seatIds: '' });
-      this.updateBookingFields(); // Single function call
+      this.updateBookingFields();
     }
   }
 
@@ -108,19 +108,18 @@ export class AdminBookingComponent implements OnInit {
       this.selectedSeatIds.push(id);
     }
     this.bookingForm.patchValue({ seatIds: this.selectedSeatIds.join(',') }, { emitEvent: false });
-    this.updateBookingFields(); // Single function call
+    this.updateBookingFields();
   }
 
-  /** Single function that updates tickets & amount. */
+
   private updateBookingFields() {
     const val = this.bookingForm.getRawValue();
     const msId = val.movieSessionId;
 
-    // 1) Update numberOfTickets based on selected seats
+
     const count = this.selectedSeatIds.length;
     this.bookingForm.get('numberOfTickets')?.patchValue(count, { emitEvent: false });
 
-    // 2) Calculate price
     if (!msId || count < 1) {
       this.bookingForm.get('paymentDetail')?.patchValue({ amount: 0 }, { emitEvent: false });
       return;
